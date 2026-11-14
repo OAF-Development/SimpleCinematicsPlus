@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!-- Defines the Plus sequencer keybinds, and groups them with Simple Cinematics' own keybinds under a
+     "Simple Cinematics" category in Options > Controls. Simple Cinematics' actions and their default keys
+     are still defined by Simple Cinematics itself, except camera Up/Down, which Plus moves to E/Q. -->
+<modded_inputs>
+    <inputs>
+        <actions>
+            <input name="SCSeqSetKey" loc="Sequencer: Set Key" />
+            <input name="SCSeqPlayPause" loc="Sequencer: Play / Pause" />
+            <input name="SCSeqNextKey" loc="Sequencer: Next Key" />
+            <input name="SCSeqPreviousKey" loc="Sequencer: Previous Key" />
+            <input name="SCSeqDeleteKey" loc="Sequencer: Delete Key" />
+            <input name="SCPlusTogglePoseHold" loc="Toggle Hold Pose" />
+        </actions>
+        <sorting name="simplecinematics" loc="Simple Cinematics">
+            <input name="SCCameraToggle"/>
+            <input name="SCCameraHudToggle"/>
+            <input name="SCCameraToggleCursor"/>
+            <input name="SCCameraForward"/>
+            <input name="SCCameraBackward"/>
+            <input name="SCCameraRight"/>
+            <input name="SCCameraLeft"/>
+            <input name="SCCameraUp"/>
+            <input name="SCCameraDown"/>
+            <input name="SCCameraSlow"/>
+            <input name="SCCameraTurbo"/>
+            <input name="SCQuickRight"/>
+            <input name="SCQuickLeft"/>
+            <input name="SCCameraSensUp"/>
+            <input name="SCCameraSensDown"/>
+            <input name="SCMovementSmoothUp"/>
+            <input name="SCMovementSmoothDown"/>
+            <input name="SCMouseSmoothUp"/>
+            <input name="SCMouseSmoothDown"/>
+            <input name="SCIncreaseDOF"/>
+            <input name="SCDecreaseDOF"/>
+            <input name="SCIncreaseFOV"/>
+            <input name="SCDecreaseFOV"/>
+            <input name="SCSeqSetKey"/>
+            <input name="SCSeqPlayPause"/>
+            <input name="SCSeqNextKey"/>
+            <input name="SCSeqPreviousKey"/>
+            <input name="SCSeqDeleteKey"/>
+            <input name="SCPlusTogglePoseHold"/>
+        </sorting>
+    </inputs>
+    <preset>
+        <input name="SCSeqSetKey">
+            <btn name="kI"/>
+        </input>
+        <input name="SCSeqPlayPause">
+            <btn name="kRMenu"/>
+        </input>
+        <input name="SCSeqNextKey">
+            <btn name="kUp"/>
+        </input>
+        <input name="SCSeqPreviousKey">
+            <btn name="kDown"/>
+        </input>
+        <input name="SCSeqDeleteKey">
+            <btn name="kDelete"/>
+        </input>
+        <input name="SCPlusTogglePoseHold">
+            <btn name="kComma"/>
+        </input>
+        <!-- WASDEQ camera movement: E up, Q down (Simple Cinematics' own defaults are Q up, Z down) -->
+        <input name="SCCameraUp">
+            <btn name="kE"/>
+        </input>
+        <input name="SCCameraDown">
+            <btn name="kQ"/>
+        </input>
+    </preset>
+</modded_inputs>

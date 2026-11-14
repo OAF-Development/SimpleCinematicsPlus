@@ -1,0 +1,2102 @@
+FrameWidgetClass CameraEditorRoot {
+ position 0 0
+ size 1 1
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 0
+ {
+  WrapSpacerWidgetClass CinematicEditorWrapper {
+   visible 1
+   ignorepointer 1
+   position 0 0
+   size 330 1
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 0
+   Padding 0
+   Margin 0
+   "Size To Content H" 1
+   {
+    WrapSpacerWidgetClass CameraListCollapse {
+     visible 1
+     ignorepointer 1
+     color 0.1961 0.1961 0.1961 0.5882
+     size 0.9 1
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+     Padding 0
+     Margin 0
+     {
+      PanelWidgetClass HudHeaderPanel {
+       visible 1
+       ignorepointer 1
+       color 0.1373 0.1373 0.1373 1
+       size 1 30
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       style rover_sim_colorable
+       {
+        TextWidgetClass HudCameraEditorText {
+         ignorepointer 1
+         position 0 0
+         size 1 28
+         halign center_ref
+         valign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 0
+         vexactsize 1
+         scriptclass "ViewBinding"
+         text "Sequencer"
+         "text halign" center
+         "text valign" center
+         {
+          ScriptParamsClass {
+           Binding_Name "TimelineReadout"
+          }
+         }
+        }
+       }
+      }
+      ScrollWidgetClass CameraListScrollBar {
+       ignorepointer 1
+       color 1 1 1 0.9412
+       position 0 0
+       size 1 1024
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       {
+        WrapSpacerWidgetClass CameraListContainer {
+         scriptclass "ViewBinding"
+         ignorepointer 1
+         size 1 0
+         hexactpos 1
+         vexactpos 1
+         hexactsize 0
+         vexactsize 0
+         Padding 0
+         Margin 0
+         "Size To Content V" 1
+         {
+          ScriptParamsClass {
+           Binding_Name "SequenceKeys"
+           Two_Way_Binding 0
+          }
+         }
+        }
+       }
+      }
+      PanelWidgetClass MainButtonPanel1 {
+       ignorepointer 1
+       color 0.1373 0.1373 0.1373 1
+       position 0 0
+       size 1 26
+       halign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       style rover_sim_colorable
+       {
+        ButtonWidgetClass AddCameraButton1 {
+         color 0 0.8824 0 1
+         position 2 0
+         size 110 22
+         valign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         scriptclass "ViewBinding"
+         style RoundedButton
+         text "Set Key"
+         font "gui/fonts/Metron"
+         {
+          PanelWidgetClass AddCameraOutline1 {
+           visible 1
+           ignorepointer 1
+           color 0 0.5882 0 1
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style RoundPanelOutline
+          }
+         }
+         {
+          ScriptParamsClass {
+           Relay_Command "OnSetKeyExecute"
+          }
+         }
+        }
+        ButtonWidgetClass DeleteCameraButton {
+         color 0.8824 0 0 1
+         position 2 0
+         size 110 22
+         halign right_ref
+         valign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         scriptclass "ViewBinding"
+         style RoundedButton
+         text "Delete Key"
+         font "gui/fonts/Metron"
+         {
+          PanelWidgetClass DeleteCameraOutline {
+           visible 1
+           ignorepointer 1
+           color 0.5882 0 0 1
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style RoundPanelOutline
+          }
+         }
+         {
+          ScriptParamsClass {
+           Relay_Command "OnDeleteKeyExecute"
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+    FrameWidgetClass CameraEditorCollapseFrame {
+     visible 1
+     ignorepointer 1
+     size 26 1
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+     {
+      ButtonWidgetClass CameraEditorCollapseButton {
+       inheritalpha 0
+       keepsafezone 0
+       color 1 1 1 0.2941
+       size 26 48
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       scriptclass "ViewBinding"
+       style Default
+       switch toggle
+       {
+        PanelWidgetClass CameraEditorCollapsePanel {
+         ignorepointer 1
+         color 0.2157 0.2157 0.2157 0.5882
+         size 1 1
+         halign center_ref
+         valign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 0
+         vexactsize 0
+         style rover_sim_colorable
+         {
+          ImageWidgetClass CameraEditorCloseImage {
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           image0 "set:ccgui_enforce image:CrScrollH"
+           mode additive
+           "src alpha" 1
+           "flip u" 1
+           filter 1
+          }
+          ImageWidgetClass CameraEditorOpenImage {
+           visible 0
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           image0 "set:ccgui_enforce image:CrScrollH"
+           mode additive
+           "src alpha" 1
+           "flip u" 0
+           filter 1
+          }
+         }
+        }
+       }
+       {
+        ScriptParamsClass {
+         Binding_Name "CameraEditorCollapse"
+         Two_Way_Binding 1
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+  WrapSpacerWidgetClass CameraOptions {
+   visible 1
+   ignorepointer 1
+   size 480 1
+   halign right_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 0
+   Padding 0
+   Margin 0
+   "Size To Content H" 1
+   content_halign right
+   {
+    WrapSpacerWidgetClass CameraControlsCollapseWrapper {
+     visible 1
+     ignorepointer 1
+     color 0.1765 0.1765 0.1765 1
+     size 454 0
+     halign right_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+     Padding 0
+     Margin 0
+     "Size To Content V" 1
+     {
+      ScrollWidgetClass CameraControlsScroll {
+       ignorepointer 1
+       size 455 1
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 0
+       "Scrollbar V" 1
+       {
+        WrapSpacerWidgetClass CameraControlsWrapper {
+         visible 1
+         clipchildren 1
+         ignorepointer 1
+         size 1 0
+         hexactpos 1
+         vexactpos 1
+         hexactsize 0
+         vexactsize 0
+         style Colorable
+         Padding 0
+         Margin 0
+         "Size To Content H" 1
+         "Size To Content V" 1
+         {
+          WrapSpacerWidgetClass PresetsWrapper {
+           visible 1
+           clipchildren 1
+           ignorepointer 1
+           color 0.7059 0.7059 0.7059 1
+           size 1 0
+           halign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style Outline_1px
+           Padding 0
+           Margin 0
+           "Size To Content V" 1
+           {
+            FrameWidgetClass PresetsFrame {
+             clipchildren 1
+             ignorepointer 1
+             color 0.1176 0.1176 0.1176 0.7843
+             position 0 0
+             size 1 22
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             {
+              PanelWidgetClass PresetsPanel {
+               ignorepointer 1
+               color 0.1176 0.1176 0.1176 1
+               position 0 0
+               size 443 22
+               halign center_ref
+               valign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 1
+               vexactsize 1
+               style rover_sim_colorable
+               {
+                TextWidgetClass PresetsText {
+                 clipchildren 1
+                 ignorepointer 1
+                 size 1 20
+                 halign center_ref
+                 valign center_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Presets"
+                 "text halign" center
+                 "text valign" center
+                }
+               }
+              }
+             }
+            }
+            PanelWidgetClass PresetsSpacer {
+             ignorepointer 1
+             size 1 3
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+            }
+            WrapSpacerWidgetClass PresetHeaderContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "PresetHeader"
+               Two_Way_Binding 0
+              }
+             }
+            }
+            WrapSpacerWidgetClass PresetListContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "PresetList"
+               Two_Way_Binding 0
+              }
+             }
+            }
+            WrapSpacerWidgetClass PresetsContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "PresetControls"
+               Two_Way_Binding 0
+              }
+             }
+            }
+           }
+          }
+          WrapSpacerWidgetClass SequencerWrapper {
+           visible 1
+           clipchildren 1
+           ignorepointer 1
+           color 0.7059 0.7059 0.7059 1
+           size 1 0
+           halign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style Outline_1px
+           Padding 0
+           Margin 0
+           "Size To Content V" 1
+           {
+            FrameWidgetClass SequencerFrame {
+             clipchildren 1
+             ignorepointer 1
+             color 0.1176 0.1176 0.1176 0.7843
+             position 0 0
+             size 1 22
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             {
+              PanelWidgetClass SequencerPanel {
+               ignorepointer 1
+               color 0.1176 0.1176 0.1176 1
+               position 0 0
+               size 443 22
+               halign center_ref
+               valign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 1
+               vexactsize 1
+               style rover_sim_colorable
+               {
+                TextWidgetClass SequencerText {
+                 clipchildren 1
+                 ignorepointer 1
+                 size 1 20
+                 halign center_ref
+                 valign center_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Sequencer"
+                 "text halign" center
+                 "text valign" center
+                }
+               }
+              }
+             }
+            }
+            PanelWidgetClass SequencerSpacer {
+             ignorepointer 1
+             size 1 3
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+            }
+            WrapSpacerWidgetClass SequenceTransportContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "SequenceTransport"
+               Two_Way_Binding 0
+              }
+             }
+            }
+            WrapSpacerWidgetClass SequenceKeyToolsContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "SequenceKeyTools"
+               Two_Way_Binding 0
+              }
+             }
+            }
+            WrapSpacerWidgetClass SequenceSettingsContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "SequenceSettings"
+               Two_Way_Binding 0
+              }
+             }
+            }
+            WrapSpacerWidgetClass SequenceTogglesContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "SequenceToggles"
+               Two_Way_Binding 0
+              }
+             }
+            }
+            WrapSpacerWidgetClass SequenceSettingsContent2 {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "SequenceSettings2"
+               Two_Way_Binding 0
+              }
+             }
+            }
+            WrapSpacerWidgetClass SequenceFileContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "SequenceFile"
+               Two_Way_Binding 0
+              }
+             }
+            }
+            WrapSpacerWidgetClass SequenceHeaderContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "SequenceHeader"
+               Two_Way_Binding 0
+              }
+             }
+            }
+            WrapSpacerWidgetClass SequenceListContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "SequenceList"
+               Two_Way_Binding 0
+              }
+             }
+            }
+           }
+          }
+          WrapSpacerWidgetClass GraphEditorWrapper {
+           visible 1
+           clipchildren 1
+           ignorepointer 1
+           color 0.7059 0.7059 0.7059 1
+           size 1 0
+           halign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style Outline_1px
+           Padding 0
+           Margin 0
+           "Size To Content V" 1
+           {
+            FrameWidgetClass GraphEditorFrame {
+             clipchildren 1
+             ignorepointer 1
+             color 0.1176 0.1176 0.1176 0.7843
+             position 0 0
+             size 1 22
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             {
+              PanelWidgetClass GraphEditorPanel {
+               ignorepointer 1
+               color 0.1176 0.1176 0.1176 1
+               position 0 0
+               size 443 22
+               halign center_ref
+               valign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 1
+               vexactsize 1
+               style rover_sim_colorable
+               {
+                TextWidgetClass GraphEditorText {
+                 clipchildren 1
+                 ignorepointer 1
+                 size 1 20
+                 halign center_ref
+                 valign center_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Graph Editor"
+                 "text halign" center
+                 "text valign" center
+                }
+               }
+              }
+             }
+            }
+            PanelWidgetClass GraphEditorSpacer {
+             ignorepointer 1
+             size 1 3
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+            }
+            WrapSpacerWidgetClass GraphHeaderContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "GraphHeader"
+               Two_Way_Binding 0
+              }
+             }
+            }
+            WrapSpacerWidgetClass GraphListContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "GraphList"
+               Two_Way_Binding 0
+              }
+             }
+            }
+           }
+          }
+          WrapSpacerWidgetClass EventsWrapper {
+           visible 1
+           clipchildren 1
+           ignorepointer 1
+           color 0.7059 0.7059 0.7059 1
+           size 1 0
+           halign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style Outline_1px
+           Padding 0
+           Margin 0
+           "Size To Content V" 1
+           {
+            FrameWidgetClass EventsFrame {
+             clipchildren 1
+             ignorepointer 1
+             color 0.1176 0.1176 0.1176 0.7843
+             position 0 0
+             size 1 22
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             {
+              PanelWidgetClass EventsPanel {
+               ignorepointer 1
+               color 0.1176 0.1176 0.1176 1
+               position 0 0
+               size 443 22
+               halign center_ref
+               valign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 1
+               vexactsize 1
+               style rover_sim_colorable
+               {
+                TextWidgetClass EventsText {
+                 clipchildren 1
+                 ignorepointer 1
+                 size 1 20
+                 halign center_ref
+                 valign center_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Events"
+                 "text halign" center
+                 "text valign" center
+                }
+               }
+              }
+             }
+            }
+            PanelWidgetClass EventsSpacer {
+             ignorepointer 1
+             size 1 3
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+            }
+            WrapSpacerWidgetClass EventHeaderContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "EventHeader"
+               Two_Way_Binding 0
+              }
+             }
+            }
+            WrapSpacerWidgetClass EventListContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "EventList"
+               Two_Way_Binding 0
+              }
+             }
+            }
+            WrapSpacerWidgetClass EventToolsContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "EventTools"
+               Two_Way_Binding 0
+              }
+             }
+            }
+           }
+          }
+          WrapSpacerWidgetClass CameraOptionsWrapper {
+           visible 1
+           ignorepointer 0
+           color 0.7059 0.7059 0.7059 1
+           size 1 0
+           halign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style Outline_1px
+           "no focus" 0
+           Padding 0
+           Margin 0
+           "Size To Content V" 1
+           content_halign right
+           {
+            FrameWidgetClass CameraOptionsFrame {
+             clipchildren 0
+             ignorepointer 1
+             color 0.1176 0.7843 0.1176 0
+             position 0 0
+             size 1 22
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             {
+              PanelWidgetClass CameraOptionsPanel {
+               clipchildren 1
+               ignorepointer 1
+               color 0.1176 0.1176 0.1176 1
+               position 0 1
+               size 443 22
+               halign center_ref
+               valign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 1
+               vexactsize 1
+               style rover_sim_colorable
+               {
+                TextWidgetClass CameraOptionsText {
+                 ignorepointer 1
+                 size 0.98 20
+                 halign center_ref
+                 valign center_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Camera Options"
+                 "text halign" center
+                 "text valign" center
+                }
+               }
+              }
+             }
+            }
+            PanelWidgetClass CameraOptionsSpacer {
+             clipchildren 1
+             ignorepointer 1
+             size 1 3
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+            }
+            WrapSpacerWidgetClass CameraOptionsContent {
+             clipchildren 1
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             style Colorable
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "CameraOptions"
+               Two_Way_Binding 0
+              }
+             }
+            }
+           }
+          }
+          WrapSpacerWidgetClass CameraFiltersWrapper {
+           visible 1
+           clipchildren 1
+           ignorepointer 1
+           color 0.7059 0.7059 0.7059 1
+           size 1 0
+           halign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style Outline_1px
+           Padding 0
+           Margin 0
+           "Size To Content V" 1
+           {
+            FrameWidgetClass CameraFiltersFrame {
+             clipchildren 1
+             ignorepointer 1
+             color 0.1176 0.1176 0.1176 0.7843
+             position 0 0
+             size 1 22
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             {
+              PanelWidgetClass CameraFiltersPanel {
+               ignorepointer 1
+               color 0.1176 0.1176 0.1176 1
+               position 0 0
+               size 443 22
+               halign center_ref
+               valign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 1
+               vexactsize 1
+               style rover_sim_colorable
+               {
+                TextWidgetClass CameraFiltersText {
+                 clipchildren 1
+                 ignorepointer 1
+                 size 1 20
+                 halign center_ref
+                 valign center_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Camera Filters"
+                 "text halign" center
+                 "text valign" center
+                }
+               }
+              }
+             }
+            }
+            PanelWidgetClass CameraFiltersSpacer {
+             ignorepointer 1
+             size 1 3
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+            }
+            WrapSpacerWidgetClass CameraFiltersContent {
+             ignorepointer 1
+             position 0 0
+             size 1 1
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "CameraFilters"
+               Two_Way_Binding 0
+              }
+             }
+            }
+           }
+          }
+          WrapSpacerWidgetClass CameraColorWrapper {
+           ignorepointer 0
+           color 0.7059 0.7059 0.7059 1
+           size 1 0
+           halign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style Outline_1px
+           Padding 0
+           Margin 0
+           "Size To Content V" 1
+           {
+            FrameWidgetClass CameraColorFrame {
+             ignorepointer 1
+             size 1 22
+             halign center_ref
+             valign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             {
+              PanelWidgetClass CameraColorPanel {
+               ignorepointer 1
+               color 0.1176 0.1176 0.1176 1
+               size 443 22
+               halign center_ref
+               valign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 1
+               vexactsize 1
+               style rover_sim_colorable
+               {
+                TextWidgetClass CameraColorText {
+                 ignorepointer 1
+                 size 1 20
+                 halign center_ref
+                 valign center_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Camera Color"
+                 "text halign" center
+                 "text valign" center
+                }
+               }
+              }
+             }
+            }
+            PanelWidgetClass CameraColorSpacer {
+             ignorepointer 1
+             size 1 3
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+            }
+            WrapSpacerWidgetClass CameraColorContent {
+             ignorepointer 1
+             position 10 10
+             size 48 48
+             hexactpos 1
+             vexactpos 1
+             hexactsize 1
+             vexactsize 1
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "CameraColor"
+              }
+             }
+            }
+           }
+          }
+          WrapSpacerWidgetClass CameraBlurControlsWrapper {
+           ignorepointer 0
+           color 0.7059 0.7059 0.7059 1
+           size 1 0
+           halign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style Outline_1px
+           Padding 0
+           Margin 0
+           "Size To Content V" 1
+           {
+            FrameWidgetClass CameraBlurControlsFrame {
+             ignorepointer 1
+             size 1 22
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             {
+              PanelWidgetClass CameraBlurControlsPanel {
+               ignorepointer 1
+               color 0.1176 0.1176 0.1176 1
+               size 443 22
+               halign center_ref
+               valign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 1
+               vexactsize 1
+               style rover_sim_colorable
+               {
+                TextWidgetClass CameraBlurControlsText {
+                 ignorepointer 1
+                 size 1 20
+                 halign center_ref
+                 valign center_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Camera Blur"
+                 "text halign" center
+                 "text valign" center
+                }
+               }
+              }
+             }
+            }
+            PanelWidgetClass CameraBlurSpacer {
+             ignorepointer 1
+             size 1 3
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+            }
+            WrapSpacerWidgetClass CameraBlurContent {
+             ignorepointer 1
+             position 10 9
+             size 48 48
+             hexactpos 1
+             vexactpos 1
+             hexactsize 1
+             vexactsize 1
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Binding_Name "CameraBlur"
+              }
+             }
+            }
+           }
+          }
+          WrapSpacerWidgetClass WeatherControlsWrapper {
+           visible 0
+           ignorepointer 0
+           color 0.7059 0.7059 0.7059 1
+           size 1 0
+           halign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style Outline_1px
+           Padding 0
+           Margin 0
+           "Size To Content V" 1
+           {
+            FrameWidgetClass WeatherControlsFrame {
+             ignorepointer 1
+             size 1 22
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             {
+              PanelWidgetClass WeatherControlsPanel {
+               ignorepointer 1
+               color 0.1176 0.1176 0.1176 1
+               size 443 22
+               halign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 1
+               vexactsize 1
+               style rover_sim_colorable
+               {
+                TextWidgetClass WeatherControlsText {
+                 ignorepointer 1
+                 size 1 20
+                 halign center_ref
+                 valign center_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Weather Controls"
+                 "text halign" center
+                 "text valign" center
+                }
+               }
+              }
+             }
+            }
+            PanelWidgetClass WeatherControlsSpacer {
+             ignorepointer 1
+             size 1 3
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+            }
+            WrapSpacerWidgetClass WeatherControlsContent {
+             ignorepointer 1
+             size 1 0
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Debug_Logging 0
+               Binding_Name "WeatherControls"
+              }
+             }
+            }
+           }
+          }
+          WrapSpacerWidgetClass DateControlsWrapper {
+           visible 0
+           ignorepointer 0
+           color 0.7059 0.7059 0.7059 1
+           size 1 0
+           halign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           style Outline_1px
+           Padding 0
+           Margin 0
+           "Size To Content V" 1
+           {
+            FrameWidgetClass WeatherControlsFrame0 {
+             ignorepointer 1
+             size 1 22
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             {
+              PanelWidgetClass WeatherControlsPanel0 {
+               ignorepointer 1
+               color 0.1176 0.1176 0.1176 1
+               size 443 22
+               halign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 1
+               vexactsize 1
+               style rover_sim_colorable
+               {
+                TextWidgetClass WeatherControlsText0 {
+                 ignorepointer 1
+                 size 1 20
+                 halign center_ref
+                 valign center_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Date Controls"
+                 "text halign" center
+                 "text valign" center
+                }
+               }
+              }
+             }
+            }
+            PanelWidgetClass WeatherControlsSpacer0 {
+             ignorepointer 1
+             size 1 3
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+            }
+            WrapSpacerWidgetClass WeatherControlsContent0 {
+             ignorepointer 1
+             size 1 0
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             scriptclass "ViewBinding"
+             Padding 3
+             Margin 0
+             "Size To Content V" 1
+             {
+              ScriptParamsClass {
+               Debug_Logging 0
+               Binding_Name "DateControls"
+              }
+             }
+            }
+           }
+          }
+          WrapSpacerWidgetClass FocusTargetWrapper {
+           ignorepointer 1
+           size 1 0
+           halign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           Padding 0
+           Margin 0
+           "Size To Content V" 1
+           {
+            WrapSpacerWidgetClass FocusTargetSection {
+             visible 1
+             clipchildren 1
+             ignorepointer 1
+             color 0.7059 0.7059 0.7059 1
+             size 1 0
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 0
+             style Outline_1px
+             Padding 0
+             Margin 0
+             "Size To Content V" 1
+             {
+            FrameWidgetClass FocusTargetFrame {
+             ignorepointer 1
+             position 0 0
+             size 1 22
+             halign center_ref
+             hexactpos 1
+             vexactpos 1
+             hexactsize 0
+             vexactsize 1
+             {
+              PanelWidgetClass FocusTargetPanel {
+               ignorepointer 1
+               color 0.1176 0.1176 0.1176 1
+               size 443 22
+               halign center_ref
+               valign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 1
+               vexactsize 1
+               style rover_sim_colorable
+               {
+                TextWidgetClass FocusTargetCaption {
+                 ignorepointer 1
+                 position 0 0
+                 size 1 20
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Focus & Follow Target"
+                 "text offset" 2 0
+                 "text halign" center
+                 "text valign" center
+                }
+               }
+              }
+             }
+            }
+              PanelWidgetClass FocusTargetMainPanel {
+               ignorepointer 0
+               color 0.1176 0.1176 0.1176 0
+               position 0 0
+               size 1 40
+               halign right_ref
+               valign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 0
+               vexactsize 1
+               {
+                ButtonWidgetClass SelectFocusTarget {
+                 color 0 0.7059 0.1569 1
+                 position 2 2
+                 size 110 18
+                 valign bottom_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 1
+                 vexactsize 1
+                 scriptclass "ViewBinding"
+                 style RoundedButton
+                 text "Select Target"
+                 font "gui/fonts/Metron"
+                 {
+                  ScriptParamsClass {
+                   Binding_Name "SelectingTargetFocusState"
+                   Two_Way_Binding 1
+                  }
+                 }
+                }
+                ButtonWidgetClass ClearFocusTargetButton {
+                 color 0.7843 0.5490 0 1
+                 position -10 2
+                 size 105 18
+                 halign center_ref
+                 valign bottom_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 1
+                 vexactsize 1
+                 scriptclass "ViewBinding"
+                 style RoundedButton
+                 text "Clear Target"
+                 font "gui/fonts/Metron"
+                 {
+                  ScriptParamsClass {
+                   Relay_Command "ClearTargetFocusExecute"
+                  }
+                 }
+                }
+                CheckBoxWidgetClass ToggleFocusCheckBox {
+                 color 1 1 1 0.3922
+                 position 0 2
+                 size 30 16
+                 halign right_ref
+                 valign bottom_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 1
+                 vexactsize 1
+                 scriptclass "ViewBinding"
+                 style CheckBox_16px
+                 {
+                  ScriptParamsClass {
+                   Binding_Name "FocusTarget"
+                   Two_Way_Binding 1
+                  }
+                 }
+                }
+                TextWidgetClass ToggleFocusText {
+                 ignorepointer 1
+                 position 32 1
+                 size 100 18
+                 halign right_ref
+                 valign bottom_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 1
+                 vexactsize 1
+                 text "Toggle Focus"
+                 "text halign" center
+                 "text valign" center
+                }
+                TextWidgetClass FocusTargetReadout {
+                 ignorepointer 0
+                 color 1 1 1 0.9961
+                 size 0.7 18
+                 halign right_ref
+                 valign top_ref
+                 position 0 2
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 scriptclass "ViewBinding"
+                 style Normal
+                 {
+                  ScriptParamsClass {
+                   Binding_Name "m_SimpleCinematicsCamera.SelectedTarget"
+                  }
+                 }
+                }
+                TextWidgetClass FocusTargetText {
+                 ignorepointer 1
+                 size 0.3 18
+                 valign top_ref
+                 position 0 2
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Focus Target : "
+                 "text offset" 3 0
+                }
+               }
+              }
+              PanelWidgetClass FollowTargetMainPanel {
+               ignorepointer 0
+               color 0.1176 0.1176 0.1176 0
+               size 1 40
+               halign right_ref
+               valign center_ref
+               hexactpos 1
+               vexactpos 1
+               hexactsize 0
+               vexactsize 1
+               {
+                ButtonWidgetClass ClearFollowTargetButton {
+                 color 0.7843 0.5490 0 1
+                 position -10 2
+                 size 105 18
+                 halign center_ref
+                 valign bottom_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 1
+                 vexactsize 1
+                 scriptclass "ViewBinding"
+                 style RoundedButton
+                 text "Clear Target"
+                 font "gui/fonts/Metron"
+                 {
+                  ScriptParamsClass {
+                   Relay_Command "ClearTargetFollowExecute"
+                  }
+                 }
+                }
+                ButtonWidgetClass SelectFollowTarget {
+                 color 0 0.7059 0.1569 1
+                 position 2 2
+                 size 110 18
+                 valign bottom_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 1
+                 vexactsize 1
+                 scriptclass "ViewBinding"
+                 style RoundedButton
+                 text "Select Target"
+                 font "gui/fonts/Metron"
+                 {
+                  ScriptParamsClass {
+                   Binding_Name "SelectingTargetFollowState"
+                   Two_Way_Binding 1
+                  }
+                 }
+                }
+                CheckBoxWidgetClass FollowTargetCheckBox {
+                 inheritalpha 0
+                 color 1 1 1 0.3922
+                 position 0 2
+                 size 30 16
+                 halign right_ref
+                 valign bottom_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 1
+                 vexactsize 1
+                 scriptclass "ViewBinding"
+                 style CheckBox_16px
+                 {
+                  ScriptParamsClass {
+                   Binding_Name "FollowTarget"
+                  }
+                 }
+                }
+                TextWidgetClass FollowTargetToggle {
+                 ignorepointer 1
+                 position 32 1
+                 size 100 18
+                 halign right_ref
+                 valign bottom_ref
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 1
+                 vexactsize 1
+                 text "Toggle Follow"
+                 "text halign" center
+                 "text valign" center
+                }
+                TextWidgetClass FollowTargetReadout {
+                 ignorepointer 1
+                 size 0.7 18
+                 halign right_ref
+                 valign top_ref
+                 position 0 2
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 scriptclass "ViewBinding"
+                 {
+                  ScriptParamsClass {
+                   Binding_Name "m_SimpleCinematicsCamera.FollowedTarget"
+                  }
+                 }
+                }
+                TextWidgetClass FollowTargetCaption {
+                 ignorepointer 1
+                 size 0.3 18
+                 valign top_ref
+                 position 0 2
+                 hexactpos 1
+                 vexactpos 1
+                 hexactsize 0
+                 vexactsize 1
+                 text "Follow Target : "
+                 "text offset" 3 0
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+    FrameWidgetClass CameraOptionsCollapseFrame {
+     ignorepointer 1
+     position 0 0
+     size 26 48
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     {
+      ButtonWidgetClass CameraOptionsCollapseButton {
+       inheritalpha 0
+       keepsafezone 0
+       color 1 1 1 0.2941
+       position 0 0
+       size 26 48
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       scriptclass "ViewBinding"
+       style Default
+       switch toggle
+       {
+        PanelWidgetClass CameraOptionsCollapsePanel {
+         ignorepointer 1
+         color 0.2157 0.2157 0.2157 0.5882
+         position 0 0
+         size 1 1
+         halign center_ref
+         valign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 0
+         vexactsize 0
+         style rover_sim_colorable
+         {
+          ImageWidgetClass CameraOptionsCloseImage {
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           image0 "set:ccgui_enforce image:CrScrollH"
+           mode additive
+           "src alpha" 1
+           "flip u" 0
+           filter 1
+          }
+          ImageWidgetClass CameraOptionsOpenImage {
+           visible 0
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           halign center_ref
+           valign center_ref
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           image0 "set:ccgui_enforce image:CrScrollH"
+           mode additive
+           "src alpha" 1
+           "flip u" 1
+           filter 1
+          }
+         }
+        }
+       }
+       {
+        ScriptParamsClass {
+         Binding_Name "CameraSettingsCollapse"
+         Two_Way_Binding 1
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+  PanelWidgetClass SCPlusTimeline {
+   visible 1
+   ignorepointer 0
+   color 0.1373 0.1373 0.1373 0.8627
+   position 0 10
+   size 0.42 62
+   halign center_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   style rover_sim_colorable
+   {
+    CanvasWidgetClass SCPlusTimelineCanvas {
+     ignorepointer 1
+     position 0 0
+     size 1 1
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+    }
+    TextWidgetClass SCPlusTimelineLabel0 {
+     visible 0
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 0 2
+     size 60 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0s"
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" center
+     "text valign" center
+    }
+    TextWidgetClass SCPlusTimelineLabel1 {
+     visible 0
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 0 2
+     size 60 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0s"
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" center
+     "text valign" center
+    }
+    TextWidgetClass SCPlusTimelineLabel2 {
+     visible 0
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 0 2
+     size 60 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0s"
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" center
+     "text valign" center
+    }
+    TextWidgetClass SCPlusTimelineLabel3 {
+     visible 0
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 0 2
+     size 60 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0s"
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" center
+     "text valign" center
+    }
+    TextWidgetClass SCPlusTimelineLabel4 {
+     visible 0
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 0 2
+     size 60 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0s"
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" center
+     "text valign" center
+    }
+    TextWidgetClass SCPlusTimelineLabel5 {
+     visible 0
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 0 2
+     size 60 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0s"
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" center
+     "text valign" center
+    }
+    TextWidgetClass SCPlusTimelineLabel6 {
+     visible 0
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 0 2
+     size 60 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0s"
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" center
+     "text valign" center
+    }
+    TextWidgetClass SCPlusTimelineLabel7 {
+     visible 0
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 0 2
+     size 60 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0s"
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" center
+     "text valign" center
+    }
+    TextWidgetClass SCPlusTimelineLabel8 {
+     visible 0
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 0 2
+     size 60 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0s"
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" center
+     "text valign" center
+    }
+    TextWidgetClass SCPlusTimelineLabel9 {
+     visible 0
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 0 2
+     size 60 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0s"
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" center
+     "text valign" center
+    }
+    TextWidgetClass SCPlusTimelineLabel10 {
+     visible 0
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 0 2
+     size 60 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "0s"
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" center
+     "text valign" center
+    }
+   }
+  }
+  PanelWidgetClass SCPlusGraph {
+   visible 0
+   ignorepointer 0
+   color 0.0784 0.0784 0.0784 0.8627
+   position 0 78
+   size 0.42 230
+   halign center_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   style rover_sim_colorable
+   {
+    CanvasWidgetClass SCPlusGraphCanvas {
+     ignorepointer 1
+     position 0 0
+     size 1 1
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+    }
+    TextWidgetClass SCPlusGraphTitle {
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 6 4
+     size 220 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text ""
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+    }
+    TextWidgetClass SCPlusGraphMax {
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 6 4
+     size 160 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text ""
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+    }
+    TextWidgetClass SCPlusGraphMid {
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 6 4
+     size 160 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text ""
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+    }
+    TextWidgetClass SCPlusGraphMin {
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 6 4
+     size 160 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text ""
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+    }
+    TextWidgetClass SCPlusGraphHint {
+     ignorepointer 1
+     color 0.8 0.8 0.8 1
+     position 6 4
+     size 400 16
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text ""
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 13
+     "text halign" right
+    }
+   }
+  }
+ }
+}

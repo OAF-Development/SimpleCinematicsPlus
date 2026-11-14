@@ -1,0 +1,14 @@
+{
+    "compress": {
+        "exclude": [],
+        "include": [
+            "\\.xml$"
+        ]
+    },
+    "headers": [
+        {
+            "name": "prefix",
+            "value": "SimpleCinematicsPlus\\Scripts"
+        }
+    ]
+}

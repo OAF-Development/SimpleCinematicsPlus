@@ -1,0 +1,59 @@
+FrameWidgetClass SCPlusKeyHelpRoot {
+ ignorepointer 1
+ position 0 0
+ size 1 1
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 0
+ priority 990
+ {
+  PanelWidgetClass SCPlusKeyHelpPanel {
+   ignorepointer 1
+   color 0.0784 0.0784 0.0784 0.9216
+   position 0 0
+   size 620 640
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   style rover_sim_colorable
+   {
+    TextWidgetClass SCPlusKeyHelpTitle {
+     ignorepointer 1
+     color 1 0.7843 0.1961 1
+     position 0 10
+     size 1 26
+     halign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     text "Simple Cinematics Plus: keys"
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 20
+     "text halign" center
+     "text valign" center
+    }
+    MultilineTextWidgetClass SCPlusKeyHelpText {
+     ignorepointer 1
+     color 0.9 0.9 0.9 1
+     position 20 46
+     size 580 584
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text ""
+     font "gui/fonts/Metron"
+     "exact text" 1
+     "exact text size" 14
+     "line spacing" 2
+    }
+   }
+  }
+ }
+}

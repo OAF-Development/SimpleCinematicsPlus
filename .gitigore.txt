@@ -1,5 +1,0 @@
-\_backups
-*.ps1
-*.py
-*.zip
-root_config.cpp.duplicate_of_Scripts_config
