@@ -1,10 +1,10 @@
 # Simple Cinematics Plus
 
-Simple Cinematics Plus (SCPlus) is an addon for **Simple Cinematics**. It turns the free camera into a small filmmaking tool: keyframe camera moves on a timeline the way you would in Blender, Unreal or Maya, shape the motion in a graph editor, and have your character fire, raise a weapon, emote, walk or change stance on cue while the shot plays.
+Simple Cinematics Plus (SCPlus) is an addon for **Simple Cinematics**. 
 
-It doesn't replace Simple Cinematics. It loads on top of it and changes it through modded classes, so the original mod stays untouched and you keep every feature it already has.
+It's goal is *simple*; affording us some of the capabilities that industry-standard software provides.
 
-## What you get
+## Key Features
 
 * **Sequencer.** Set keys for position, rotation, FOV and depth of field at the playhead, then play them back with Bezier, Linear, Constant or Ease curves.
 * **Timeline bar and graph editor.** Scrub, zoom, pan and drag keys on a Blender-style timeline, and edit curve handles per channel.
@@ -15,23 +15,26 @@ It doesn't replace Simple Cinematics. It loads on top of it and changes it throu
 * **Presets and saved settings.** Save and load looks (FOV, DOF, filters, blur, colour), and keep your control settings between sessions.
 * **Fixes** to a number of Simple Cinematics bugs. See [Fixes to Simple Cinematics](reference/fixes.md).
 
-{% hint style="info" %}
-SCPlus is built for **solo filming on your own server or offline**. Multiplayer works for the core features, but some edge cases are untested. See [Known limits](reference/known-limits.md).
-{% endhint %}
+This addon is built primarily for those seeking to accomplish common tasks of **solo filming on local or live cinematic/test servers.**.
+- Will work on live server instances for the core features, but some edge cases are untested; and performance may take hits and result in disruptions in a smooth camera tracking.
+- See [Known limits](reference/known-limits.md).
 
 ## Requirements
 
 | Mod | Why |
 | --- | --- |
-| Simple Cinematics | SCPlus extends it (`SimpleCinematics_Scripts`) |
-| Dabs Framework | UI framework used by Simple Cinematics and SCPlus |
+| Simple Cinematics | The core basis for affording us further capabilities |
+| Dabs Framework | UI framework used by Simple Cinematics and SCP |
 | Community Framework (CF) | RPCs used for server-side actions |
-| Community Online Tools (COT) | Exclusively tested with COT; functionality without COT has not been conducted |
+| Community-Online-Tools (COT) | Exclusively tested with COT; functionality without COT has not been conducted |
 
 Continue to [Installation](getting-started/installation.md).
 
+## Additional Mods Tested
+* **Survivor Animations** by HunterZ + contributors (SCP affords ability to Hold Pose with SA Emotes)
+
 ## Credits & Disclaimers
 
-* **Simple Cinematics Plus** by iLLMannerSevs and Claude Opus 5.5.
-* **Simple Cinematics** by InclementDab and JLK ([Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2547108825)). SCPlus builds on their work and requires it.
-* **Dabs Framework** by InclementDab.
+* **Simple Cinematics Plus** by iLLMannerSevs and Claude Opus 5.5
+* **Simple Cinematics** by InclementDab and JLK ([Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2547108825))
+* **Dabs Framework** by InclementDab

@@ -6,6 +6,5 @@ Full-body emotes normally drop back to idle when the game thinks you've moved or
 * It works with vanilla emotes and with **SurvivorAnimations** poses.
 * It only applies while the cinematic camera is open. Close the camera and emotes behave normally again.
 
-{% hint style="info" %}
-SurvivorAnimations isn't required. SCPlus works with it if it's loaded, and doesn't change it.
-{% endhint %}
+> [!TIP]
+SurvivorAnimations isn't required; but you will reap it's benefits if chosing to do so.

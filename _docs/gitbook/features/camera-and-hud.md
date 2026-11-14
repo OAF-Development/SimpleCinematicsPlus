@@ -29,9 +29,9 @@ Camera speed, mouse speed, movement and mouse smoothing, view distance and objec
 | **Auto-Hide HUD** | Hides the HUD while a sequence plays, for clean recordings. |
 | **Camera Collision** | Stops the free-flying camera about 20 cm short of walls, objects and the ground, and slides it along them. On by default. |
 
-{% hint style="info" %}
-Camera Collision only applies while you fly the camera yourself. Playback ignores it, so a keyframed shot can still pass through a window or doorway. Thin objects like fences and some foliage have weak collision and the camera may slip through them.
-{% endhint %}
+> [!NOTE]
+> Camera Collision only applies while you fly the camera yourself. Playback ignores it, so a keyframed shot can still pass through a window or doorway. Thin objects like fences and some foliage have weak collision and the camera may slip through them.
+
 
 ## Focus and Follow Target
 

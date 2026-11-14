@@ -21,9 +21,8 @@ Every key below can be changed in **Options > Controls > Simple Cinematics**, ex
 | Field of view | Hold right mouse button + move mouse up / down |
 | Step the ticked quick slider | `Left` / `Right` arrows, or mouse wheel |
 
-{% hint style="info" %}
-Simple Cinematics' own default for Up / Down is `Q` / `Z`. SCPlus changes it to `E` / `Q` to match the usual WASD + EQ layout of 3D software. If you've already set your own binds, they're kept.
-{% endhint %}
+> [!TIP]
+> Simple Cinematics' own default for Up / Down is `Q` / `Z`. SCPlus changes it to `E` / `Q` to match the usual WASD + EQ layout of 3D software. If you've already set your own binds, they're kept.
 
 ## Sequencer (SCPlus)
 
