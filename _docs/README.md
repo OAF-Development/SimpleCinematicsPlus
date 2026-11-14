@@ -1,8 +1,12 @@
 # Simple Cinematics Plus
 
-Simple Cinematics Plus (SCPlus) is an addon for **Simple Cinematics**. 
+{% embed url="https://youtu.be/xE_2ndl5UT8?si=sOIqw5GkLDSxBmQr" %}
 
-It's goal is *simple*; affording us some of the capabilities that industry-standard software provides.
+
+
+\*\*Simple Cinematics Plus\*\* is an addon for **Simple Cinematics**.
+
+It's goal is _simple_; affording us some of the capabilities that industry-standard software provides.
 
 ## Key Features
 
@@ -13,24 +17,26 @@ It's goal is *simple*; affording us some of the capabilities that industry-stand
 * **Bullet Cam.** Follow your next shot from the muzzle to the impact in slow motion.
 * **Framing tools.** Letterbox bars, a rule-of-thirds grid, camera collision, and an auto-hidden HUD for clean takes.
 * **Presets and saved settings.** Save and load looks (FOV, DOF, filters, blur, colour), and keep your control settings between sessions.
-* **Fixes** to a number of Simple Cinematics bugs. See [Fixes to Simple Cinematics](reference/fixes.md).
+* **Fixes** to a number of Simple Cinematics bugs. See [Fixes to Simple Cinematics](gitbook/reference/fixes.md).
 
 This addon is built primarily for those seeking to accomplish common tasks of **solo filming on local or live cinematic/test servers.**.
-- Will work on live server instances for the core features, but some edge cases are untested; and performance may take hits and result in disruptions in a smooth camera tracking.
-- See [Known limits](reference/known-limits.md).
+
+* Will work on live server instances for the core features, but some edge cases are untested; and performance may take hits and result in disruptions in a smooth camera tracking.
+* See [Known limits](gitbook/reference/known-limits.md).
 
 ## Requirements
 
-| Mod | Why |
-| --- | --- |
-| Simple Cinematics | The core basis for affording us further capabilities |
-| Dabs Framework | UI framework used by Simple Cinematics and SCP |
-| Community Framework (CF) | RPCs used for server-side actions |
+| Mod                          | Why                                                                           |
+| ---------------------------- | ----------------------------------------------------------------------------- |
+| Simple Cinematics            | The core basis for affording us further capabilities                          |
+| Dabs Framework               | UI framework used by Simple Cinematics and SCP                                |
+| Community Framework (CF)     | RPCs used for server-side actions                                             |
 | Community-Online-Tools (COT) | Exclusively tested with COT; functionality without COT has not been conducted |
 
-Continue to [Installation](getting-started/installation.md).
+Continue to [Installation](gitbook/getting-started/installation.md).
 
 ## Additional Mods Tested
+
 * **Survivor Animations** by HunterZ + contributors (SCP affords ability to Hold Pose with SA Emotes)
 
 ## Credits & Disclaimers

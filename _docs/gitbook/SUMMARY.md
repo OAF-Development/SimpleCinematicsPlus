@@ -1,6 +1,6 @@
 # Table of Contents
 
-* [Simple Cinematics Plus](README.md)
+* [Simple Cinematics Plus](../)
 
 ## Getting Started
 
