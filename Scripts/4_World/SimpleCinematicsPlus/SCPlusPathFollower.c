@@ -142,7 +142,7 @@ class SCPlusPathFollower: Managed
 
 		m_Elapsed += dt;
 		if (m_Elapsed > m_TimeLimit) {
-			Print("[SCPlus Paths] gave up at " + m_Progress.ToString() + " of " + m_Length.ToString() + " m (took too long)");
+			// Print("[SCPlus Paths] gave up at " + m_Progress.ToString() + " of " + m_Length.ToString() + " m (took too long)");
 			return false;
 		}
 
@@ -192,7 +192,7 @@ class SCPlusPathFollower: Managed
 			if (m_LogTimer <= 0) {
 				m_LogTimer = 1;
 				float off_path = FlatDistance(position, PointAt(m_Progress));
-				Print("[SCPlus Paths] " + m_Progress.ToString() + "/" + m_Length.ToString() + " m, off path " + off_path.ToString() + " m, turn=" + diff.ToString() + " sign=" + m_AimSign.ToString());
+				// Print("[SCPlus Paths] " + m_Progress.ToString() + "/" + m_Length.ToString() + " m, off path " + off_path.ToString() + " m, turn=" + diff.ToString() + " sign=" + m_AimSign.ToString());
 			}
 		}
 
@@ -223,7 +223,7 @@ class SCPlusPathFollower: Managed
 		m_SignChecked = true;
 		if (abs_diff > m_SignStartDiff + 5) {
 			m_AimSign = -m_AimSign;
-			Print("[SCPlus Paths] turning the wrong way, flipped the aim direction");
+			// Print("[SCPlus Paths] turning the wrong way, flipped the aim direction");
 		}
 	}
 

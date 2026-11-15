@@ -401,7 +401,7 @@ modded class SimpleCinematicsHud
 		}
 		
 		SimpleCinematicsCamera.scp_TypingInHud = typing;
-		Print("[SCPlus Typing] " + typing + " (" + reason + ")");
+		// Print("[SCPlus Typing] " + typing + " (" + reason + ")");
 	}
 	
 	protected bool IsTextBox(Widget widget)

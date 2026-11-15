@@ -53,7 +53,7 @@ class SCPlusBackups
 		}
 		
 		bool kept = CopyFile(file_path, GetBackupPath(kind, name, 1));
-		Print(string.Format("[SCPlus Backups] %1 '%2' -> slot 1 (%3)", kind, name, kept));
+		// Print(string.Format("[SCPlus Backups] %1 '%2' -> slot 1 (%3)", kind, name, kept));
 		return kept;
 	}
 }

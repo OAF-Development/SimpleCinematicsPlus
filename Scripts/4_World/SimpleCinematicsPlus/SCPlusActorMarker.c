@@ -124,7 +124,7 @@ class SCPlusActorMarkers: Managed
 			marker.SetInvisible(hide);
 		}
 		if (changed) {
-			Print("[SCPlus Markers] " + scp_Markers.Count().ToString() + " marker(s) " + hide.ToString());
+			// Print("[SCPlus Markers] " + scp_Markers.Count().ToString() + " marker(s) " + hide.ToString());
 		}
 	}
 }

@@ -212,7 +212,7 @@ class SCPlusPreset: Managed
 			preset.scp_Values = new array<ref SCPlusPresetValue>();
 		}
 		
-		PrintFormat("[SimpleCinematicsPlus] Loaded preset %1 with %2 values", name, preset.scp_Values.Count());
+		// PrintFormat("[SimpleCinematicsPlus] Loaded preset %1 with %2 values", name, preset.scp_Values.Count());
 		
 		return preset;
 	}

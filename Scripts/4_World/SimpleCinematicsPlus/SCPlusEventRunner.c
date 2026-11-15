@@ -188,7 +188,7 @@ class SCPlusEventRunner: Managed
 					OnMoveChanged.Invoke(player, m_MoveSpeed, m_MoveAngle, m_MoveTimeLeft);
 				}
 				
-				Print("[SCPlus Events] move speed=" + m_MoveSpeed.ToString() + " angle=" + m_MoveAngle.ToString() + " for " + m_MoveTimeLeft.ToString() + " s");
+				// Print("[SCPlus Events] move speed=" + m_MoveSpeed.ToString() + " angle=" + m_MoveAngle.ToString() + " for " + m_MoveTimeLeft.ToString() + " s");
 				break;
 			}
 			
@@ -204,7 +204,7 @@ class SCPlusEventRunner: Managed
 					OnPathChanged.Invoke(player, Math.Clamp(event_key.scp_Speed, 1, 3), m_Waypoints);
 				}
 				
-				Print("[SCPlus Paths] path started: " + m_Path.GetPointCount().ToString() + " waypoints, speed " + event_key.scp_Speed.ToString());
+				// Print("[SCPlus Paths] path started: " + m_Path.GetPointCount().ToString() + " waypoints, speed " + event_key.scp_Speed.ToString());
 				break;
 			}
 			
@@ -212,7 +212,7 @@ class SCPlusEventRunner: Managed
 				m_StanceWanted = Math.Clamp(event_key.scp_Stance, SCPlusStance.ERECT, SCPlusStance.PRONE);
 				m_StanceTimer = 0;
 				m_StanceForced = false;
-				Print("[SCPlus Events] stance requested=" + m_StanceWanted.ToString());
+				// Print("[SCPlus Events] stance requested=" + m_StanceWanted.ToString());
 				break;
 			}
 		}
@@ -288,7 +288,7 @@ UpdateStance(player, dt);
 		bool raised = player.IsRaised();
 		if (raised != m_LoggedRaised) {
 			m_LoggedRaised = raised;
-			Print("[SCPlus Events] weapon raised=" + raised.ToString() + " wanted=" + m_RaiseWanted.ToString() + " raise completed=" + player.IsWeaponRaiseCompleted().ToString());
+			// Print("[SCPlus Events] weapon raised=" + raised.ToString() + " wanted=" + m_RaiseWanted.ToString() + " raise completed=" + player.IsWeaponRaiseCompleted().ToString());
 		}
 		
 		if (!m_RaiseOverridden && !m_RaiseWanted) {
@@ -340,7 +340,7 @@ UpdateStance(player, dt);
 			m_RaiseRetryTimer = 0;
 			m_RaisePulseOff = true;
 			input.OverrideRaise(HumanInputControllerOverrideType.ENABLED, !m_RaiseWanted);
-			Print("[SCPlus Events] weapon didn't follow (raised=" + raised.ToString() + ", wanted=" + m_RaiseWanted.ToString() + "), nudging the raise input");
+			// Print("[SCPlus Events] weapon didn't follow (raised=" + raised.ToString() + ", wanted=" + m_RaiseWanted.ToString() + "), nudging the raise input");
 			return;
 		}
 		
@@ -372,7 +372,7 @@ UpdateStance(player, dt);
 			input.OverrideMovementSpeed(HumanInputControllerOverrideType.ENABLED, 0);
 			input.SetDisabled(false);
 			m_ControllerReleased = true;
-			Print("[SCPlus Events] controller enabled for an event");
+			// Print("[SCPlus Events] controller enabled for an event");
 			return;
 		}
 		
@@ -382,7 +382,7 @@ UpdateStance(player, dt);
 		}
 		
 		m_ControllerReleased = false;
-		Print("[SCPlus Events] controller handed back to the camera");
+		// Print("[SCPlus Events] controller handed back to the camera");
 	}
 	
 	protected void UpdateMovement(PlayerBase player, float dt)
@@ -437,7 +437,7 @@ m_MoveTimeLeft -= dt;
 		
 		UpdateControllerRelease(input);
 		if (!m_Path.Update(player, dt)) {
-			Print("[SCPlus Paths] path finished");
+			// Print("[SCPlus Paths] path finished");
 			EndPath(input, false);
 		}
 	}
@@ -473,7 +473,7 @@ m_MoveTimeLeft -= dt;
 		input.OverrideMovementAngle(HumanInputControllerOverrideType.DISABLED, 0);
 		input.OverrideMovementSpeed(HumanInputControllerOverrideType.ENABLED, 0);
 		m_MoveSettle = MOVE_SETTLE_TIME; // UpdateMovement hands the controller back once this runs out
-		Print("[SCPlus Events] move finished");
+		// Print("[SCPlus Events] move finished");
 	}
 	
 	protected void UpdateStance(PlayerBase player, float dt)
@@ -505,7 +505,7 @@ m_MoveTimeLeft -= dt;
 				move.ForceStance(-1);
 			}
 			
-			Print("[SCPlus Events] stance done (stance idx=" + state.m_iStanceIdx.ToString() + ", wanted=" + target.ToString() + ")");
+			// Print("[SCPlus Events] stance done (stance idx=" + state.m_iStanceIdx.ToString() + ", wanted=" + target.ToString() + ")");
 			m_StanceWanted = -1;
 			m_StanceForced = false;
 			UpdateControllerRelease(input);
@@ -550,7 +550,7 @@ m_MoveTimeLeft -= dt;
 		m_RaiseRetryTimer = 0;
 		m_LowerElapsed = 0;
 		m_RaisePulseOff = false;
-		Print("[SCPlus Events] raise requested=" + raised.ToString() + " (currently raised=" + player.IsRaised().ToString() + ")");
+		// Print("[SCPlus Events] raise requested=" + raised.ToString() + " (currently raised=" + player.IsRaised().ToString() + ")");
 		if (raised) {
 			ApplyRaiseOverrides(player, true);
 		}
@@ -619,7 +619,7 @@ m_MoveTimeLeft -= dt;
 			return;
 		}
 		
-		Print("[SCPlus Events] actor reset to " + position.ToString());
+		// Print("[SCPlus Events] actor reset to " + position.ToString());
 		if (GetGame().IsMultiplayer()) {
 			OnActorReset.Invoke(player, position, orientation);
 		}
@@ -664,7 +664,7 @@ m_MoveTimeLeft -= dt;
 			return;
 		}
 		
-		Print(string.Format("[SCPlus Events] scene target %1 reset to %2", target.GetType(), position.ToString()));
+		// Print(string.Format("[SCPlus Events] scene target %1 reset to %2", target.GetType(), position.ToString()));
 		if (GetGame().IsMultiplayer() && GetGame().IsClient()) {
 			OnTargetReset.Invoke(target, position, orientation);
 			return;

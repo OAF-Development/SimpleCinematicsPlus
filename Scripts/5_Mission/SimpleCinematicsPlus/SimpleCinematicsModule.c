@@ -76,7 +76,7 @@ modded class SimpleCinematicsModule
 			return;
 		}
 		
-		Print(string.Format("[SCPlus Events] %1 reset scene target %2", GetSenderId(sender), target.GetType()));
+		// Print(string.Format("[SCPlus Events] %1 reset scene target %2", GetSenderId(sender), target.GetType()));
 		SCPlusEventRunner.ResetTargetOnServer(target, data.param1, data.param2);
 	}
 	
@@ -512,7 +512,7 @@ modded class SimpleCinematicsModule
 		
 		m_TakeState = SCPLUS_TAKE_COUNTDOWN;
 		m_TakeTimer = SCPLUS_TAKE_COUNT + SCPLUS_TAKE_PREROLL;
-		Print("[SCPlus Take] countdown started");
+		// Print("[SCPlus Take] countdown started");
 	}
 	
 	protected void UpdateTake(float timeslice)
@@ -546,7 +546,7 @@ modded class SimpleCinematicsModule
 			return;
 		}
 		
-		Print("[SCPlus Take] playing");
+		// Print("[SCPlus Take] playing");
 	}
 	
 	protected void FinishTake(string message)
@@ -576,7 +576,7 @@ modded class SimpleCinematicsModule
 			controller.ShowMessage(message);
 		}
 		
-		Print("[SCPlus Take] " + message);
+		// Print("[SCPlus Take] " + message);
 	}
 	
 	// Bullet Cam "Show Path (debug)" lines, projected onto the overlay canvas. Each line is drawn in short

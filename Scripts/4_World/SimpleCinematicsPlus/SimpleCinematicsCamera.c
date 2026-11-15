@@ -100,7 +100,7 @@ modded class SimpleCinematicsCamera
 		}
 		
 		SelectWaypoint(index);
-		Print("[SCPlus Paths] waypoint " + (index + 1).ToString() + " at " + position.ToString());
+		// Print("[SCPlus Paths] waypoint " + (index + 1).ToString() + " at " + position.ToString());
 	}
 	
 	void MoveWaypoint(int index, vector position)
@@ -258,7 +258,7 @@ static const float SCPLUS_COLLISION_MARGIN = 0.2;
 		
 		scp_NaNLogTimer -= time_slice;
 		if (scp_NaNLogTimer <= 0) {
-			Print(string.Format("[SCPlus Camera] NaN camera transform (%1 frames):%2. Restored the last good one.", scp_NaNFrames, bad));
+			// Print(string.Format("[SCPlus Camera] NaN camera transform (%1 frames):%2. Restored the last good one.", scp_NaNFrames, bad));
 			scp_NaNLogTimer = 1;
 			scp_NaNFrames = 0;
 		}
@@ -619,7 +619,7 @@ static const float SCPLUS_COLLISION_MARGIN = 0.2;
 		scp_Baking = true;
 		scp_BakeNextSample = 0;
 		RecordBakeSample(0, true);
-		Print(string.Format("[SCPlus AutoKey] bake started (%1, %2 s)", scp_BakeTrack, scp_BakeLength));
+		// Print(string.Format("[SCPlus AutoKey] bake started (%1, %2 s)", scp_BakeTrack, scp_BakeLength));
 	}
 	
 	// No keys: keep the offset from the anchor (smoothed like Follow Actor) and aim at the focus target
@@ -687,11 +687,11 @@ static const float SCPLUS_COLLISION_MARGIN = 0.2;
 		if (complete && count >= 2) {
 			scp_BakeResult = SCPlusBake.Decimate(scp_BakeSamples);
 			scp_BakeRecordedLength = recorded;
-			Print(string.Format("[SCPlus AutoKey] baked %1 samples into %2 keys over %3 s", count, scp_BakeResult.Count(), recorded));
+			// Print(string.Format("[SCPlus AutoKey] baked %1 samples into %2 keys over %3 s", count, scp_BakeResult.Count(), recorded));
 		} else {
 			scp_BakeResult = null;
 			scp_BakeMessage = "Auto-Key: stopped before the end, nothing baked (keys unchanged)";
-			Print("[SCPlus AutoKey] bake discarded (stopped early)");
+			// Print("[SCPlus AutoKey] bake discarded (stopped early)");
 		}
 		
 		scp_BakeSamples = null;
@@ -733,7 +733,7 @@ static const float SCPLUS_COLLISION_MARGIN = 0.2;
 		m_Sequence.scp_HasActorStart = true;
 		m_Sequence.scp_ActorStartPos = player.GetPosition();
 		m_Sequence.scp_ActorStartOri = player.GetOrientation();
-		Print("[SCPlus Events] actor start set at " + m_Sequence.scp_ActorStartPos.ToString());
+		// Print("[SCPlus Events] actor start set at " + m_Sequence.scp_ActorStartPos.ToString());
 		
 		// The scene starts here for the target too, unless its start was set by hand already
 		if (!m_Sequence.scp_HasTargetStart) {
@@ -789,7 +789,7 @@ static const float SCPLUS_COLLISION_MARGIN = 0.2;
 		m_Sequence.scp_TargetStartPos = target.GetPosition();
 		m_Sequence.scp_TargetStartOri = target.GetOrientation();
 		m_Sequence.scp_TargetType = target.GetType();
-		Print(string.Format("[SCPlus Events] scene target start: %1 at %2", m_Sequence.scp_TargetType, m_Sequence.scp_TargetStartPos.ToString()));
+		// Print(string.Format("[SCPlus Events] scene target start: %1 at %2", m_Sequence.scp_TargetType, m_Sequence.scp_TargetStartPos.ToString()));
 		return true;
 	}
 	
@@ -1230,10 +1230,10 @@ static const float SCPLUS_COLLISION_MARGIN = 0.2;
 		if (scp_TypingLogTimer == 0) {
 			float raw_move = Math.AbsFloat(input.LocalValue("SCCameraRight")) + Math.AbsFloat(input.LocalValue("SCCameraLeft")) + Math.AbsFloat(input.LocalValue("SCCameraUp")) + Math.AbsFloat(input.LocalValue("SCCameraDown")) + Math.AbsFloat(input.LocalValue("SCCameraForward")) + Math.AbsFloat(input.LocalValue("SCCameraBackward"));
 			if (raw_move > 0 && typing) {
-				Print("[SCPlus Typing] movement keys held while typing: blocked");
+				// Print("[SCPlus Typing] movement keys held while typing: blocked");
 				scp_TypingLogTimer = 1;
 			} else if (raw_move > 0 && GetGame().GetUIManager().IsCursorVisible()) {
-				Print("[SCPlus Typing] camera moving with cursor shown, typing flag off");
+				// Print("[SCPlus Typing] camera moving with cursor shown, typing flag off");
 				scp_TypingLogTimer = 1;
 			}
 		}

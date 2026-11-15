@@ -86,7 +86,7 @@ class SCPlusBulletCam
 			direction = GetAimDirection(shooter);
 		}
 		
-		Print("[SCPlus BulletCam] barrel " + barrel_direction.ToString() + " -> path " + direction.ToString() + " | player dir " + weapon.GetHierarchyRootPlayer().GetDirection().ToString());
+		// Print("[SCPlus BulletCam] barrel " + barrel_direction.ToString() + " -> path " + direction.ToString() + " | player dir " + weapon.GetHierarchyRootPlayer().GetDirection().ToString());
 		
 		if (scp_ShowPath) {
 			DrawDebugShot(weapon, muzzle, direction);
@@ -229,7 +229,7 @@ class SCPlusBulletCam
 			float pitch = weapons.GetBaseAimingAngleUD();
 			vector aim_direction = GetAimDirection(player);
 			s_PathShapes.Insert(DrawLine(muzzle, muzzle + aim_direction * 300, 0xFF00FF00));
-			Print("[SCPlus BulletCam] barrel dir " + barrel_direction.ToString() + " aim dir " + aim_direction.ToString() + " aimLR " + weapons.GetBaseAimingAngleLR() + " aimUD " + pitch);
+			// Print("[SCPlus BulletCam] barrel dir " + barrel_direction.ToString() + " aim dir " + aim_direction.ToString() + " aimLR " + weapons.GetBaseAimingAngleLR() + " aimUD " + pitch);
 		}
 	}
 	
