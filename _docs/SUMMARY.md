@@ -3,6 +3,7 @@
 * [Simple Cinematics Plus](README.md)
 * [Table of Contents](gitbook/SUMMARY.md)
 * [features](features/README.md)
+  * [Auto-Key and actor track](gitbook/features/auto-key.md)
   * [Bullet Cam](gitbook/features/bullet-cam.md)
   * [Camera, HUD and presets](gitbook/features/camera-and-hud.md)
   * [Events (actor actions)](gitbook/features/events.md)
@@ -21,3 +22,4 @@
   * [Permissions and repacking](gitbook/reference/permissions.md)
   * [Roadmap](gitbook/reference/roadmap.md)
   * [Troubleshooting and FAQ](gitbook/reference/troubleshooting.md)
+  * [What's new](gitbook/reference/changelog.md)
