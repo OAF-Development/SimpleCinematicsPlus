@@ -4,8 +4,16 @@
 // Pure pursuit: the follower tracks how far along the path the player is (the closest point on the curve,
 // only ever moving forward) and steers at a point LOOKAHEAD metres further on. That cuts smoothly through
 // the dense points of a rounded corner instead of chasing each one. The player never stops to turn; on a
-// sharp turn they drop to walking pace. The aim direction that turns the body was found in game to be -1;
-// it's still checked once and flipped if the gap clearly grows.
+// sharp turn they drop to walking pace.
+//
+// Turn direction: which sign of the aim override turns the body towards the target has changed with how the
+// client and server share the steering (with the client's aim zeroed it looked like -1; with both steering,
+// iLL saw the actor walk the mirror image of the path, 2026-11-17). So it isn't assumed: the follower starts
+// at +1 and watches how the body actually turns. If over the first decisive turn samples the body mostly turns
+// away from the target, it flips once. Unlike the old check (did the gap grow?), this looks at the direction
+// of the body's own turn, which a moving lookahead point on a curve can't fool.
+//
+// Smoothness: a small dead zone and a low-pass on the aim command stop the side-to-side wobble.
 class SCPlusPathFollower: Managed
 {
 	static const float LOOKAHEAD_WALK = 1.6; // metres ahead on the path to steer at
@@ -13,11 +21,15 @@ class SCPlusPathFollower: Managed
 	static const float LOOKAHEAD_SPRINT = 3.4;
 	static const float ARRIVE = 0.7; // metres from the end that count as arrived
 	static const float SLOW_TURN = 50; // degrees: walk while turning this sharply
-	static const float AIM_GAIN = 0.25;
-	static const float AIM_MAX = 0.08; // radians per tick
+	static const float AIM_GAIN = 0.2;
+	static const float AIM_MAX = 0.06; // radians per tick
+	static const float AIM_DEADZONE = 1.5; // degrees: closer than this, don't turn
+	static const float AIM_SMOOTH = 0.35; // 0..1, share of the new aim command taken each tick
 	static const float MIN_SPEED = 0.8; // m/s, for the give-up time
 	static const int MAX_POINTS = 600;
 	static const int SEARCH_SEGMENTS = 12; // how far ahead the closest-point search looks
+	static const int SIGN_SAMPLES = 12; // decisive turn samples before the direction is settled
+	static const float SIGN_MIN_TURN = 0.4; // degrees the body must turn in a tick to count as a sample
 
 	protected ref array<vector> m_Points = new array<vector>();
 	protected ref array<float> m_Distances = new array<float>(); // path length up to each point
@@ -26,10 +38,14 @@ class SCPlusPathFollower: Managed
 	protected int m_Segment; // segment the player is on
 	protected float m_Progress; // metres along the path
 	protected float m_Lookahead;
-	protected float m_AimSign = -1;
+	protected float m_AimSign = 1;
 	protected bool m_SignChecked;
-	protected float m_SignWatch = -1;
-	protected float m_SignStartDiff;
+	protected int m_SignGood;
+	protected int m_SignBad;
+	protected float m_LastHeading;
+	protected bool m_HasLastHeading;
+	protected float m_LastDiff;
+	protected float m_Aim; // smoothed aim command
 	protected float m_Elapsed;
 	protected float m_TimeLimit;
 	protected bool m_Verbose;
@@ -173,10 +189,15 @@ class SCPlusPathFollower: Managed
 			diff += 360;
 		}
 
-		UpdateSignCheck(Math.AbsFloat(diff), dt);
+		UpdateSignCheck(body[0], diff);
 
-		float aim = Math.Clamp(diff * Math.DEG2RAD * AIM_GAIN, -AIM_MAX, AIM_MAX) * m_AimSign;
-		input.OverrideAimChangeX(HumanInputControllerOverrideType.ENABLED, aim);
+		float wanted = 0;
+		if (Math.AbsFloat(diff) > AIM_DEADZONE) {
+			wanted = Math.Clamp(diff * Math.DEG2RAD * AIM_GAIN, -AIM_MAX, AIM_MAX) * m_AimSign;
+		}
+
+		m_Aim = Math.Lerp(m_Aim, wanted, AIM_SMOOTH);
+		input.OverrideAimChangeX(HumanInputControllerOverrideType.ENABLED, m_Aim);
 		input.OverrideAimChangeY(HumanInputControllerOverrideType.ENABLED, 0);
 
 		float speed = m_Speed;
@@ -199,31 +220,46 @@ class SCPlusPathFollower: Managed
 		return true;
 	}
 
-	// The first real turn shows which aim direction turns the body towards the target
-	protected void UpdateSignCheck(float abs_diff, float dt)
+	// Settles which aim sign turns the body towards the target, from how the body really turned since the
+	// last tick. A sample counts when the target was clearly to one side last tick and the body turned a little.
+	protected void UpdateSignCheck(float heading, float diff)
 	{
 		if (m_SignChecked) {
 			return;
 		}
 
-		if (m_SignWatch < 0) {
-			if (abs_diff > 15) {
-				m_SignWatch = 0;
-				m_SignStartDiff = abs_diff;
+		if (m_HasLastHeading && Math.AbsFloat(m_LastDiff) > 4) {
+			float turned = heading - m_LastHeading;
+			while (turned > 180) {
+				turned -= 360;
 			}
 
-			return;
+			while (turned < -180) {
+				turned += 360;
+			}
+
+			if (Math.AbsFloat(turned) >= SIGN_MIN_TURN) {
+				if ((turned > 0) == (m_LastDiff > 0)) {
+					m_SignGood++;
+				} else {
+					m_SignBad++;
+				}
+			}
 		}
 
-		m_SignWatch += dt;
-		if (m_SignWatch < 0.4) {
+		m_LastHeading = heading;
+		m_HasLastHeading = true;
+		m_LastDiff = diff;
+
+		if (m_SignGood + m_SignBad < SIGN_SAMPLES) {
 			return;
 		}
 
 		m_SignChecked = true;
-		if (abs_diff > m_SignStartDiff + 5) {
+		if (m_SignBad > m_SignGood * 2) {
 			m_AimSign = -m_AimSign;
-			// Print("[SCPlus Paths] turning the wrong way, flipped the aim direction");
+			m_Aim = 0;
+			// Print("[SCPlus Paths] body turned away from the path, flipped the aim direction");
 		}
 	}
 

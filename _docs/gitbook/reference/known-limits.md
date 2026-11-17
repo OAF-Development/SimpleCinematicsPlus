@@ -4,21 +4,24 @@ SCPlus is actively developed and tested mostly for **solo filming**, on a local 
 
 ## Multiplayer
 
-* Firing, movement, the actor reset and date changes are sent to the server and work in multiplayer.
+* Firing, movement, path following, actor track replay, the actor and scene target reset, and date changes are sent to the server and work in multiplayer.
 * Holstering, prone edge cases, weapon sway, and several players filming at once are **untested**.
 * Everything else (the camera, keys, presets, overlays and Bullet Cam) is local to you.
 
 ## Sequencer and camera
 
-* **Keys are fixed in the world.** If a movement event walks your character away, the camera doesn't follow them during playback. Key the camera along the route, or use **Aim At Target** to keep them in frame.
-* **Follow Target doesn't apply during playback.**
-* **Event edits aren't in undo.** `Ctrl+Z` only undoes key edits.
-* **Camera Collision** can let the camera slip through thin fences and some foliage. It's off during playback.
+* **Keys are fixed in the world.** To keep a walking character in frame, tick **Follow Actor**, use **Aim At Target**, or bake the move with [Auto-Key](../features/auto-key.md).
+* **Simple Cinematics' Follow Target doesn't apply during playback.** Follow Actor covers your own character. For other targets, bake the follow with Auto-Key.
+* **Camera Collision** can let the camera slip through thin fences and some foliage. It's off during playback, and off by default.
+* **Show Motion Path** is only drawn while the HUD is shown.
 
-## Events
+## Events and actors
 
-* **Walk / Jog / Sprint 3 s move in a straight line for 3 seconds.** For a route, use the path events. Waypoint paths are still in development and have no obstacle avoidance.
-* **Overlapping events can clash.** A stance change during a walk or a raise may be skipped. Space them out.
+* **Walk / Jog / Sprint always go straight ahead.** You can change how long they last by dragging the end of their bar, but not their direction. For a route, use the path events or an actor track.
+* **Waypoint paths are still in testing** and have no obstacle avoidance.
+* **Actor track replay is close, not exact.** DayZ only moves a character at fixed walk, jog and sprint speeds, so expect a few tenths of a metre of error on a steady walk, and more on sudden speed changes.
+* **Overlapping events can clash.** Clashes are drawn red on the timeline. One of the events may be cut short or skipped, so space them out.
+* **Animals and AI** go back to the scene target start, but they don't behave the same in every take.
 * Fire events need a loaded weapon in hand.
 
 ## Input

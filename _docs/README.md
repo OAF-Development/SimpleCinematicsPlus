@@ -13,10 +13,14 @@ It's goal is _simple_; affording us some of the capabilities that industry-stand
 * **Sequencer.** Set keys for position, rotation, FOV and depth of field at the playhead, then play them back with Bezier, Linear, Constant or Ease curves.
 * **Timeline bar and graph editor.** Scrub, zoom, pan and drag keys on a Blender-style timeline, and edit curve handles per channel.
 * **Events.** Put actions on the timeline: fire a shot, a burst or a full magazine, raise or lower the weapon, play or stop an emote, walk, jog, sprint, crouch, stand or go prone.
+* **Auto-Key.** Play the shot once and bake the camera into clean, editable keys. It also records where your character walks as an actor track you can edit in the graph editor and replay take after take.
+* **Waypoint Editor.** Place a route on the ground, round off its corners, and have your character walk, jog or sprint along it. Follow Actor keeps the camera moving with them.
+* **Record Take.** One click hides the HUD and overlays, counts down 3-2-1 and plays the sequence once for a clean recording.
 * **Pose Hold.** Keep a full-body emote (vanilla or SurvivorAnimations) playing instead of snapping back to idle.
 * **Bullet Cam.** Follow your next shot from the muzzle to the impact in slow motion.
-* **Framing tools.** Letterbox bars, a rule-of-thirds grid, camera collision, and an auto-hidden HUD for clean takes.
-* **Presets and saved settings.** Save and load looks (FOV, DOF, filters, blur, colour), and keep your control settings between sessions.
+* **Framing tools.** Letterbox bars, a rule-of-thirds grid, camera collision, an on-screen motion path, and an auto-hidden HUD for clean takes.
+* **Presets and saved settings.** Save and load looks (FOV, DOF, filters, blur, colour), and keep your control settings between sessions. Overwritten or deleted presets and sequences are backed up.
+* **Help built in.** Hover any control for a tooltip, or press `F1` for a sheet of every key.
 * **Fixes** to a number of Simple Cinematics bugs. See [Fixes to Simple Cinematics](gitbook/reference/fixes.md).
 
 This addon is built primarily for those seeking to accomplish common tasks of **solo filming on local or live cinematic/test servers.**.

@@ -23,61 +23,61 @@ class SCPlusKeyframe: Managed
 	float scp_DOFDistance;
 	float scp_DOFBlur;
 	int scp_Interpolation = SCPlusInterpolation.BEZIER;
-	
+
 	// Graph editor handles. A channel whose bit is set in scp_ManualMask uses the slopes stored here
 	// (value per second) instead of the automatic, clamped ones. Channel order: see GetChannel.
 	int scp_ManualMask;
 	ref array<float> scp_InTangents = {};
 	ref array<float> scp_OutTangents = {};
-	
+
 	static const int CHANNEL_COUNT = 9;
-	
+
 	// 0-2 position x/y/z, 3-5 rotation yaw/pitch/roll, 6 FOV, 7 DOF distance, 8 DOF blur
 	float GetChannel(int channel)
 	{
 		if (channel < 3) {
 			return scp_Position[channel];
 		}
-		
+
 		if (channel < 6) {
 			return scp_Orientation[channel - 3];
 		}
-		
+
 		switch (channel) {
 			case 6: return scp_FOV;
 			case 7: return scp_DOFDistance;
 		}
-		
+
 		return scp_DOFBlur;
 	}
-	
+
 	void SetChannel(int channel, float value)
 	{
 		if (channel < 3) {
 			scp_Position[channel] = value;
 			return;
 		}
-		
+
 		if (channel < 6) {
 			scp_Orientation[channel - 3] = value;
 			return;
 		}
-		
+
 		switch (channel) {
 			case 6: {
 				scp_FOV = Math.Clamp(value, 1, 179);
 				return;
 			}
-			
+
 			case 7: {
 				scp_DOFDistance = Math.Max(value, 0);
 				return;
 			}
 		}
-		
+
 		scp_DOFBlur = Math.Max(value, 0);
 	}
-	
+
 	static string ChannelName(int channel)
 	{
 		switch (channel) {
@@ -90,45 +90,59 @@ class SCPlusKeyframe: Managed
 			case 6: return "FOV";
 			case 7: return "DOF Distance";
 		}
-		
+
 		return "DOF Blur";
 	}
-	
+
+	// Actor track (see SCPlusCameraSequence.scp_ActorKeys): only position and heading (yaw) are used
+	static const int ACTOR_CHANNEL_COUNT = 4;
+
+	static string ActorChannelName(int channel)
+	{
+		switch (channel) {
+			case 0: return "Actor X";
+			case 1: return "Actor Height";
+			case 2: return "Actor Z";
+		}
+
+		return "Actor Heading";
+	}
+
 	bool HasManualTangent(int channel)
 	{
 		return (scp_ManualMask & (1 << channel)) != 0 && scp_InTangents && scp_OutTangents && scp_InTangents.Count() == CHANNEL_COUNT && scp_OutTangents.Count() == CHANNEL_COUNT;
 	}
-	
+
 	void SetManualTangent(int channel, float in_slope, float out_slope)
 	{
 		if (!scp_InTangents) {
 			scp_InTangents = new array<float>();
 		}
-		
+
 		if (!scp_OutTangents) {
 			scp_OutTangents = new array<float>();
 		}
-		
+
 		while (scp_InTangents.Count() < CHANNEL_COUNT) {
 			scp_InTangents.Insert(0);
 		}
-		
+
 		while (scp_OutTangents.Count() < CHANNEL_COUNT) {
 			scp_OutTangents.Insert(0);
 		}
-		
+
 		scp_InTangents[channel] = in_slope;
 		scp_OutTangents[channel] = out_slope;
 		scp_ManualMask = scp_ManualMask | (1 << channel);
 	}
-	
+
 	void ClearManualTangent(int channel)
 	{
 		if ((scp_ManualMask & (1 << channel)) != 0) {
 			scp_ManualMask = scp_ManualMask - (1 << channel);
 		}
 	}
-	
+
 	static SCPlusKeyframe Create(float time, vector position, vector orientation, float fov, float dof_distance, float dof_blur, int interpolation = SCPlusInterpolation.BEZIER)
 	{
 		SCPlusKeyframe keyframe = new SCPlusKeyframe();
@@ -141,9 +155,9 @@ class SCPlusKeyframe: Managed
 		keyframe.scp_Interpolation = interpolation;
 		return keyframe;
 	}
-	
+
 	static const int INTERPOLATION_COUNT = 6;
-	
+
 	static string InterpolationName(int interpolation)
 	{
 		switch (interpolation) {
@@ -153,10 +167,10 @@ class SCPlusKeyframe: Managed
 			case SCPlusInterpolation.EASE_OUT: return "Ease Out";
 			case SCPlusInterpolation.EASE_IN_OUT: return "Ease In/Out";
 		}
-		
+
 		return "Bezier";
 	}
-	
+
 	SCPlusKeyframe Clone()
 	{
 		SCPlusKeyframe copy = Create(scp_KeyTime, scp_Position, scp_Orientation, scp_FOV, scp_DOFDistance, scp_DOFBlur, scp_Interpolation);
@@ -164,11 +178,11 @@ class SCPlusKeyframe: Managed
 		if (scp_InTangents) {
 			copy.scp_InTangents.Copy(scp_InTangents);
 		}
-		
+
 		if (scp_OutTangents) {
 			copy.scp_OutTangents.Copy(scp_OutTangents);
 		}
-		
+
 		return copy;
 	}
 }
@@ -198,7 +212,7 @@ enum SCPlusStance
 class SCPlusEvent: Managed
 {
 	static const int TYPE_COUNT = 8;
-	
+
 	float scp_Time; // seconds on the timeline
 	int scp_Type = SCPlusEventType.FIRE;
 	int scp_Count = 1;
@@ -208,22 +222,22 @@ class SCPlusEvent: Managed
 	float scp_Duration = 3; // MOVE: seconds
 	float scp_Angle; // MOVE: degrees relative to the body's facing (0 forward)
 	int scp_Stance = SCPlusStance.ERECT; // STANCE
-	
+
 	// Timed events run for scp_Duration seconds and are drawn as bars on the timeline
 	bool IsTimed()
 	{
 		return scp_Type == SCPlusEventType.MOVE;
 	}
-	
+
 	float GetEnd()
 	{
 		if (IsTimed()) {
 			return scp_Time + scp_Duration;
 		}
-		
+
 		return scp_Time;
 	}
-	
+
 	SCPlusEvent Clone()
 	{
 		SCPlusEvent copy = new SCPlusEvent();
@@ -238,7 +252,7 @@ class SCPlusEvent: Managed
 		copy.scp_Stance = scp_Stance;
 		return copy;
 	}
-	
+
 	string GetCaption()
 	{
 		switch (scp_Type) {
@@ -246,10 +260,10 @@ class SCPlusEvent: Managed
 				if (scp_Count == 1) {
 					return "Fire 1 shot";
 				}
-				
+
 				return string.Format("Fire %1 shots", scp_Count);
 			}
-			
+
 			case SCPlusEventType.RAISE: return "Raise weapon";
 			case SCPlusEventType.LOWER: return "Lower weapon";
 			case SCPlusEventType.EMOTE: return string.Format("Emote %1", scp_EmoteId);
@@ -261,40 +275,40 @@ class SCPlusEvent: Managed
 				} else if (scp_Speed >= 3) {
 					gait = "Sprint";
 				}
-				
+
 				string move_caption = string.Format("%1 %2 s", gait, scp_Duration.ToString());
 				if (Math.AbsFloat(scp_Angle) > 0.5) {
 					move_caption += string.Format(" at %1 deg", Math.Round(scp_Angle));
 				}
-				
+
 				return move_caption;
 			}
-			
+
 			case SCPlusEventType.PATH: {
 				if (scp_Speed == 2) {
 					return "Jog path";
 				}
-				
+
 				if (scp_Speed >= 3) {
 					return "Sprint path";
 				}
-				
+
 				return "Walk path";
 			}
-			
+
 			case SCPlusEventType.STANCE: {
 				if (scp_Stance == SCPlusStance.CROUCH) {
 					return "Crouch";
 				}
-				
+
 				if (scp_Stance == SCPlusStance.PRONE) {
 					return "Prone";
 				}
-				
+
 				return "Stand";
 			}
 		}
-		
+
 		return "Event";
 	}
 }
@@ -302,10 +316,10 @@ class SCPlusEvent: Managed
 class SCPlusCameraSequence: Managed
 {
 	static const string DIRECTORY = "$profile:SimpleCinematics\\Sequences";
-	
+
 	// Keys closer together than this are treated as the same frame (one frame at 60 fps)
 	static const float KEY_TOLERANCE = 0.0166;
-	
+
 	string scp_Name;
 	string scp_MapName; // map the sequence was recorded on
 	float scp_Length = 10; // timeline length in seconds
@@ -328,14 +342,45 @@ class SCPlusCameraSequence: Managed
 	ref array<vector> scp_Waypoints = new array<vector>();
 	// Corner rounding per waypoint, 0 (sharp) to 1 (fully rounded); missing entries use the default
 	ref array<float> scp_WaypointCurves = new array<float>();
-ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
+	ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
 	ref array<ref SCPlusEvent> scp_Events = {}; // always sorted by scp_Time
-	
+	// Actor track: where the player (actor) went during an Auto-Key take, as editable keys. Position is the
+	// player's feet, scp_Orientation[0] the body heading (pitch and roll stay 0; FOV / DOF are unused).
+	// Always sorted by scp_KeyTime. With scp_ReplayActor on, playback walks the actor along it.
+	ref array<ref SCPlusKeyframe> scp_ActorKeys = {};
+	bool scp_ReplayActor;
+
+	bool HasActorTrack()
+	{
+		return scp_ActorKeys && scp_ActorKeys.Count() >= 2;
+	}
+
+	// Inserts a key into a time-sorted list (replacing a key on the same frame); returns its index
+	static int InsertSorted(notnull array<ref SCPlusKeyframe> keys, notnull SCPlusKeyframe key)
+	{
+		key.scp_KeyTime = Math.Max(key.scp_KeyTime, 0);
+		for (int existing = 0; existing < keys.Count(); existing++) {
+			if (Math.AbsFloat(keys[existing].scp_KeyTime - key.scp_KeyTime) <= KEY_TOLERANCE) {
+				keys.RemoveOrdered(existing);
+				break;
+			}
+		}
+
+		for (int i = 0; i < keys.Count(); i++) {
+			if (keys[i].scp_KeyTime > key.scp_KeyTime) {
+				keys.InsertAt(key, i);
+				return i;
+			}
+		}
+
+		return keys.Insert(key);
+	}
+
 	int Count()
 	{
 		return scp_Keys.Count();
 	}
-	
+
 	// The timeline always covers every key
 	float GetLength()
 	{
@@ -343,14 +388,18 @@ ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
 		if (scp_Keys.Count() > 0) {
 			length = Math.Max(length, scp_Keys[scp_Keys.Count() - 1].scp_KeyTime);
 		}
-		
+
 		if (scp_Events.Count() > 0) {
 			length = Math.Max(length, scp_Events[scp_Events.Count() - 1].scp_Time);
 		}
-		
+
+		if (scp_ActorKeys && scp_ActorKeys.Count() > 0) {
+			length = Math.Max(length, scp_ActorKeys[scp_ActorKeys.Count() - 1].scp_KeyTime);
+		}
+
 		return length;
 	}
-	
+
 	int FindKeyAt(float time)
 	{
 		foreach (int i, SCPlusKeyframe key: scp_Keys) {
@@ -358,10 +407,10 @@ ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
 				return i;
 			}
 		}
-		
+
 		return -1;
 	}
-	
+
 	// Inserts a key, replacing any key already on that frame. Returns its index.
 	int SetKey(notnull SCPlusKeyframe key)
 	{
@@ -372,43 +421,43 @@ ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
 			key.scp_Interpolation = scp_Keys[existing].scp_Interpolation;
 			scp_Keys.RemoveOrdered(existing);
 		}
-		
+
 		for (int i = 0; i < scp_Keys.Count(); i++) {
 			if (scp_Keys[i].scp_KeyTime > key.scp_KeyTime) {
 				scp_Keys.InsertAt(key, i);
 				return i;
 			}
 		}
-		
+
 		return scp_Keys.Insert(key);
 	}
-	
+
 	// Moves a key to a new time (replacing any key there) and returns its new index
 	int MoveKey(int index, float time)
 	{
 		if (!scp_Keys.IsValidIndex(index)) {
 			return -1;
 		}
-		
+
 		SCPlusKeyframe key = scp_Keys[index];
 		scp_Keys.RemoveOrdered(index);
 		key.scp_KeyTime = time;
-		
+
 		int existing = FindKeyAt(time);
 		if (existing != -1) {
 			scp_Keys.RemoveOrdered(existing);
 		}
-		
+
 		for (int i = 0; i < scp_Keys.Count(); i++) {
 			if (scp_Keys[i].scp_KeyTime > key.scp_KeyTime) {
 				scp_Keys.InsertAt(key, i);
 				return i;
 			}
 		}
-		
+
 		return scp_Keys.Insert(key);
 	}
-	
+
 	// Index of the first key after time, or -1
 	int NextKey(float time)
 	{
@@ -417,10 +466,10 @@ ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
 				return i;
 			}
 		}
-		
+
 		return -1;
 	}
-	
+
 	// Index of the last key before time, or -1
 	int PreviousKey(float time)
 	{
@@ -429,12 +478,12 @@ ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
 				return i;
 			}
 		}
-		
+
 		return -1;
 	}
-	
+
 	// --- Events ---
-	
+
 	// Inserts an event in time order (several events may share a time) and returns its index
 	int AddEvent(notnull SCPlusEvent event_key)
 	{
@@ -445,49 +494,49 @@ ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
 				return i;
 			}
 		}
-		
+
 		return scp_Events.Insert(event_key);
 	}
-	
+
 	// Moves an event to a new time and returns its new index
 	int MoveEvent(int index, float time)
 	{
 		if (!scp_Events.IsValidIndex(index)) {
 			return -1;
 		}
-		
+
 		SCPlusEvent event_key = scp_Events[index];
 		scp_Events.RemoveOrdered(index);
 		event_key.scp_Time = time;
 		return AddEvent(event_key);
 	}
-	
+
 	// Index of an event that clashes with the event at index, or -1. Two events clash when one would
 	// cut the other short or be skipped by the runner:
 	//  - a timed move (MOVE) is still running when a stance change, another move/path or an emote starts
 	//  - a stance change lands within RAISE_SETTLE seconds of a raise / lower (the weapon change is still busy)
 	static const float RAISE_SETTLE = 1.0;
-	
+
 	int FindClash(int index)
 	{
 		if (!scp_Events.IsValidIndex(index)) {
 			return -1;
 		}
-		
+
 		SCPlusEvent a = scp_Events[index];
 		foreach (int other, SCPlusEvent b: scp_Events) {
 			if (other == index) {
 				continue;
 			}
-			
+
 			if (EventsClash(a, b) || EventsClash(b, a)) {
 				return other;
 			}
 		}
-		
+
 		return -1;
 	}
-	
+
 	// Does "later" interrupt "first"?
 	protected static bool EventsClash(SCPlusEvent first, SCPlusEvent later)
 	{
@@ -495,7 +544,7 @@ ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
 		if (gap < 0) {
 			return false;
 		}
-		
+
 		if (first.IsTimed() && gap < first.scp_Duration - KEY_TOLERANCE) {
 			switch (later.scp_Type) {
 				case SCPlusEventType.MOVE:
@@ -507,41 +556,41 @@ ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
 				}
 			}
 		}
-		
+
 		if ((first.scp_Type == SCPlusEventType.RAISE || first.scp_Type == SCPlusEventType.LOWER) && later.scp_Type == SCPlusEventType.STANCE) {
 			return gap < RAISE_SETTLE;
 		}
-		
+
 		return false;
 	}
-	
+
 	// --- File handling ---
-	
+
 	static string GetFilePath(string name)
 	{
 		return string.Format("%1\\%2.json", DIRECTORY, SCPlusPreset.SanitizeName(name));
 	}
-	
+
 	static void EnsureDirectory()
 	{
 		if (!FileExist("$profile:SimpleCinematics")) {
 			MakeDirectory("$profile:SimpleCinematics");
 		}
-		
+
 		if (!FileExist(DIRECTORY)) {
 			MakeDirectory(DIRECTORY);
 		}
 	}
-	
+
 	bool Save()
 	{
 		scp_Name = SCPlusPreset.SanitizeName(scp_Name);
 		if (scp_Name == string.Empty) {
 			return false;
 		}
-		
+
 		EnsureDirectory();
-		
+
 		string json;
 		JsonSerializer serializer = new JsonSerializer();
 		// Serialize through a typed variable: WriteToString(this, ...) uses the parameter's static type and writes "{}"
@@ -550,28 +599,28 @@ ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
 			ErrorEx(string.Format("[SimpleCinematicsPlus] Failed to serialize sequence %1", scp_Name));
 			return false;
 		}
-		
+
 		// Keep the version being replaced (Backups\Sequences\<name>.1.json is the newest)
 		SCPlusBackups.Keep("Sequences", GetFilePath(scp_Name), scp_Name);
-		
+
 		FileHandle handle = OpenFile(GetFilePath(scp_Name), FileMode.WRITE);
 		if (!handle) {
 			ErrorEx(string.Format("[SimpleCinematicsPlus] Could not open %1 for writing", GetFilePath(scp_Name)));
 			return false;
 		}
-		
+
 		FPrint(handle, json);
 		CloseFile(handle);
 		return true;
 	}
-	
+
 	static SCPlusCameraSequence Load(string name)
 	{
 		string file_path = GetFilePath(name);
 		if (!File.Exists(file_path)) {
 			return null;
 		}
-		
+
 		SCPlusCameraSequence sequence = new SCPlusCameraSequence();
 		string json_error;
 		JsonSerializer serializer = new JsonSerializer();
@@ -579,56 +628,65 @@ ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
 			ErrorEx(string.Format("[SimpleCinematicsPlus] Failed to read sequence %1: %2", file_path, json_error));
 			return null;
 		}
-		
+
 		if (!sequence.scp_Events) {
 			sequence.scp_Events = new array<ref SCPlusEvent>();
 		}
-		
+
 		// Sort events too (older sequence files have none)
 		array<ref SCPlusEvent> loaded_events = sequence.scp_Events;
 		sequence.scp_Events = new array<ref SCPlusEvent>();
 		foreach (SCPlusEvent loaded_event: loaded_events) {
 			sequence.AddEvent(loaded_event);
 		}
-		
+
 		if (!sequence.scp_Keys) {
 			sequence.scp_Keys = new array<ref SCPlusKeyframe>();
 		}
-		
+
 		// Re-insert so a hand-edited file still ends up sorted
 		array<ref SCPlusKeyframe> loaded_keys = sequence.scp_Keys;
 		sequence.scp_Keys = new array<ref SCPlusKeyframe>();
 		foreach (SCPlusKeyframe key: loaded_keys) {
 			sequence.SetKey(key);
 		}
-		
+
+		// Actor track (older sequence files have none)
+		array<ref SCPlusKeyframe> loaded_actor_keys = sequence.scp_ActorKeys;
+		sequence.scp_ActorKeys = new array<ref SCPlusKeyframe>();
+		if (loaded_actor_keys) {
+			foreach (SCPlusKeyframe actor_key: loaded_actor_keys) {
+				InsertSorted(sequence.scp_ActorKeys, actor_key);
+			}
+		}
+
 		return sequence;
 	}
-	
+
 	static bool Delete(string name)
 	{
 		string file_path = GetFilePath(name);
 		if (!File.Exists(file_path)) {
 			return false;
 		}
-		
+
 		// A deleted sequence can be recovered from Backups\Sequences\<name>.1.json
 		SCPlusBackups.Keep("Sequences", file_path, SCPlusPreset.SanitizeName(name));
 		return DeleteFile(file_path);
 	}
-	
+
 	static array<string> List()
 	{
 		array<string> names = {};
 		if (!FileExist(DIRECTORY)) {
 			return names;
 		}
-		
+
 		array<string> files = Directory.EnumerateFiles(DIRECTORY, "*.json");
 		foreach (string file: files) {
 			names.Insert(File.GetNameWithoutExtension(file));
 		}
-		
+
 		names.Sort();
 		return names;
 	}
@@ -640,7 +698,7 @@ ref array<ref SCPlusKeyframe> scp_Keys = {}; // always sorted by scp_KeyTime
 class SCPlusSequenceEvaluator: Managed
 {
 	static const int CHANNEL_COUNT = 9;
-	
+
 	protected ref array<float> m_Times = {};
 	protected ref array<int> m_Interpolation = {};
 	// m_Values[channel * key_count + key], m_Tangents the same layout (value per second)
@@ -648,32 +706,41 @@ class SCPlusSequenceEvaluator: Managed
 	protected ref array<float> m_Tangents = {}; // incoming slope at each key
 	protected ref array<float> m_OutTangents = {}; // outgoing slope at each key
 	protected int m_KeyCount;
-	
-	void SCPlusSequenceEvaluator(notnull SCPlusCameraSequence sequence)
+
+	// keys: the list to evaluate (the actor track); null = the sequence's camera keys
+	void SCPlusSequenceEvaluator(SCPlusCameraSequence sequence, array<ref SCPlusKeyframe> keys = null)
 	{
-		m_KeyCount = sequence.Count();
+		if (!keys && sequence) {
+			keys = sequence.scp_Keys;
+		}
+
+		if (!keys) {
+			return;
+		}
+
+		m_KeyCount = keys.Count();
 		if (m_KeyCount == 0) {
 			return;
 		}
-		
+
 		m_Values.Resize(CHANNEL_COUNT * m_KeyCount);
 		m_Tangents.Resize(CHANNEL_COUNT * m_KeyCount);
 		m_OutTangents.Resize(CHANNEL_COUNT * m_KeyCount);
-		
+
 		vector previous_orientation;
 		for (int k = 0; k < m_KeyCount; k++) {
-			SCPlusKeyframe key = sequence.scp_Keys[k];
+			SCPlusKeyframe key = keys[k];
 			m_Times.Insert(key.scp_KeyTime);
 			m_Interpolation.Insert(key.scp_Interpolation);
-			
+
 			vector orientation = key.scp_Orientation;
 			if (k > 0) {
 				orientation[0] = UnwrapAngle(orientation[0], previous_orientation[0]);
 				orientation[2] = UnwrapAngle(orientation[2], previous_orientation[2]);
 			}
-			
+
 			previous_orientation = orientation;
-			
+
 			m_Values[0 * m_KeyCount + k] = key.scp_Position[0];
 			m_Values[1 * m_KeyCount + k] = key.scp_Position[1];
 			m_Values[2 * m_KeyCount + k] = key.scp_Position[2];
@@ -684,10 +751,10 @@ class SCPlusSequenceEvaluator: Managed
 			m_Values[7 * m_KeyCount + k] = key.scp_DOFDistance;
 			m_Values[8 * m_KeyCount + k] = key.scp_DOFBlur;
 		}
-		
+
 		for (int channel = 0; channel < CHANNEL_COUNT; channel++) {
 			for (int i = 0; i < m_KeyCount; i++) {
-				SCPlusKeyframe tangent_key = sequence.scp_Keys[i];
+				SCPlusKeyframe tangent_key = keys[i];
 				if (tangent_key.HasManualTangent(channel)) {
 					m_Tangents[channel * m_KeyCount + i] = tangent_key.scp_InTangents[channel];
 					m_OutTangents[channel * m_KeyCount + i] = tangent_key.scp_OutTangents[channel];
@@ -699,40 +766,40 @@ class SCPlusSequenceEvaluator: Managed
 			}
 		}
 	}
-	
+
 	int GetKeyCount()
 	{
 		return m_KeyCount;
 	}
-	
+
 	float GetKeyTime(int key)
 	{
 		return m_Times[key];
 	}
-	
+
 	// Key value as the curves see it (rotation unwrapped)
 	float GetKeyValue(int channel, int key)
 	{
 		return m_Values[channel * m_KeyCount + key];
 	}
-	
+
 	float GetInTangent(int channel, int key)
 	{
 		return m_Tangents[channel * m_KeyCount + key];
 	}
-	
+
 	float GetOutTangent(int channel, int key)
 	{
 		return m_OutTangents[channel * m_KeyCount + key];
 	}
-	
+
 	// One channel of the curve at a time (before the first key / after the last key it holds)
 	float EvaluateChannelAt(int channel, float time)
 	{
 		if (m_KeyCount == 0) {
 			return 0;
 		}
-		
+
 		int segment = 0;
 		if (time <= m_Times[0]) {
 			time = m_Times[0];
@@ -741,10 +808,10 @@ class SCPlusSequenceEvaluator: Managed
 				segment++;
 			}
 		}
-		
+
 		return EvaluateChannel(channel, segment, time);
 	}
-	
+
 	// Blender-style auto-clamped handle: flat at the first and last key and at any local peak or dip
 	// (so the curve never overshoots a key), otherwise the slope between the neighbouring keys.
 	protected float AutoClampedTangent(int channel, int i)
@@ -752,22 +819,22 @@ class SCPlusSequenceEvaluator: Managed
 		if (i == 0 || i == m_KeyCount - 1) {
 			return 0;
 		}
-		
+
 		float previous = m_Values[channel * m_KeyCount + i - 1];
 		float current = m_Values[channel * m_KeyCount + i];
 		float next = m_Values[channel * m_KeyCount + i + 1];
 		if ((current - previous) * (next - current) <= 0) {
 			return 0;
 		}
-		
+
 		float span = m_Times[i + 1] - m_Times[i - 1];
 		if (span <= 0) {
 			return 0;
 		}
-		
+
 		return (next - previous) / span;
 	}
-	
+
 	protected float EvaluateChannel(int channel, int segment, float time)
 	{
 		int channel_offset = channel * m_KeyCount;
@@ -775,37 +842,37 @@ class SCPlusSequenceEvaluator: Managed
 		if (segment >= m_KeyCount - 1) {
 			return v0;
 		}
-		
+
 		float v1 = m_Values[channel_offset + segment + 1];
 		float t0 = m_Times[segment];
 		float span = m_Times[segment + 1] - t0;
 		if (span <= 0) {
 			return v1;
 		}
-		
+
 		float s = Math.Clamp((time - t0) / span, 0, 1);
 		switch (m_Interpolation[segment]) {
 			case SCPlusInterpolation.CONSTANT: {
 				return v0;
 			}
-			
+
 			case SCPlusInterpolation.LINEAR: {
 				return Math.Lerp(v0, v1, s);
 			}
-			
+
 			case SCPlusInterpolation.EASE_IN: {
 				return Math.Lerp(v0, v1, s * s);
 			}
-			
+
 			case SCPlusInterpolation.EASE_OUT: {
 				return Math.Lerp(v0, v1, 1 - (1 - s) * (1 - s));
 			}
-			
+
 			case SCPlusInterpolation.EASE_IN_OUT: {
 				return Math.Lerp(v0, v1, s * s * (3 - 2 * s));
 			}
 		}
-		
+
 		// Cubic Hermite (equivalent to a Bezier with handles at 1/3 of the segment)
 		float m0 = m_OutTangents[channel_offset + segment] * span;
 		float m1 = m_Tangents[channel_offset + segment + 1] * span;
@@ -813,14 +880,14 @@ class SCPlusSequenceEvaluator: Managed
 		float s3 = s2 * s;
 		return (2 * s3 - 3 * s2 + 1) * v0 + (s3 - 2 * s2 + s) * m0 + (3 * s2 - 2 * s3) * v1 + (s3 - s2) * m1;
 	}
-	
+
 	// Before the first key the camera holds the first key, after the last key it holds the last key
 	void Evaluate(float time, out vector position, out vector orientation, out float fov, out float dof_distance, out float dof_blur)
 	{
 		if (m_KeyCount == 0) {
 			return;
 		}
-		
+
 		int segment = 0;
 		if (time <= m_Times[0]) {
 			time = m_Times[0];
@@ -829,7 +896,7 @@ class SCPlusSequenceEvaluator: Managed
 				segment++;
 			}
 		}
-		
+
 		position = Vector(EvaluateChannel(0, segment, time), EvaluateChannel(1, segment, time), EvaluateChannel(2, segment, time));
 		orientation = Vector(EvaluateChannel(3, segment, time), EvaluateChannel(4, segment, time), EvaluateChannel(5, segment, time));
 		orientation[1] = Math.Clamp(orientation[1], -89, 89);
@@ -837,18 +904,18 @@ class SCPlusSequenceEvaluator: Managed
 		dof_distance = Math.Max(EvaluateChannel(7, segment, time), 0);
 		dof_blur = Math.Max(EvaluateChannel(8, segment, time), 0);
 	}
-	
+
 	// Shifts angle by whole turns so it is within 180 degrees of reference_angle
 	static float UnwrapAngle(float angle, float reference_angle)
 	{
 		while (angle - reference_angle > 180) {
 			angle -= 360;
 		}
-		
+
 		while (angle - reference_angle < -180) {
 			angle += 360;
 		}
-		
+
 		return angle;
 	}
 }
@@ -858,31 +925,41 @@ class SCPlusUndoState: Managed
 {
 	ref array<ref SCPlusKeyframe> scp_Keys = new array<ref SCPlusKeyframe>();
 	ref array<ref SCPlusEvent> scp_Events = new array<ref SCPlusEvent>();
-	
+	ref array<ref SCPlusKeyframe> scp_ActorKeys = new array<ref SCPlusKeyframe>();
+
 	static SCPlusUndoState Capture(notnull SCPlusCameraSequence sequence)
 	{
 		SCPlusUndoState state = new SCPlusUndoState();
 		foreach (SCPlusKeyframe key: sequence.scp_Keys) {
 			state.scp_Keys.Insert(key.Clone());
 		}
-		
+
+		foreach (SCPlusKeyframe actor_key: sequence.scp_ActorKeys) {
+			state.scp_ActorKeys.Insert(actor_key.Clone());
+		}
+
 		foreach (SCPlusEvent event_key: sequence.scp_Events) {
 			state.scp_Events.Insert(event_key.Clone());
 		}
-		
+
 		return state;
 	}
-	
+
 	void Apply(notnull SCPlusCameraSequence sequence)
 	{
 		sequence.scp_Keys.Clear();
 		foreach (SCPlusKeyframe key: scp_Keys) {
 			sequence.scp_Keys.Insert(key.Clone());
 		}
-		
+
 		sequence.scp_Events.Clear();
 		foreach (SCPlusEvent event_key: scp_Events) {
 			sequence.scp_Events.Insert(event_key.Clone());
+		}
+
+		sequence.scp_ActorKeys.Clear();
+		foreach (SCPlusKeyframe actor_key: scp_ActorKeys) {
+			sequence.scp_ActorKeys.Insert(actor_key.Clone());
 		}
 	}
 }
@@ -900,12 +977,20 @@ class SCPlusBake
 	static const float DOF_BLUR_TOLERANCE = 0.05;
 	static const float MAX_TURN = 90; // degrees one segment may turn, so the curves never take the long way round
 	static const float MAX_GAP = 4; // seconds between keys at most
-	
+	// Actor track: a walking body sways a little; these keep the real path (well under the 0.3 m the
+	// replay can hold) without a key every sample
+	static const float ACTOR_POSITION_TOLERANCE = 0.05;
+	static const float ACTOR_ANGLE_TOLERANCE = 2.0;
+
+	// Tolerances used by the current Decimate call
+	protected static float s_PositionTolerance = POSITION_TOLERANCE;
+	protected static float s_AngleTolerance = ANGLE_TOLERANCE;
+
 	static float GetStep(float length)
 	{
 		return Math.Max(SAMPLE_STEP, length / MAX_SAMPLES);
 	}
-	
+
 	// Angles continuous from sample to sample (350 then 370, not 350 then 10)
 	static void Unwrap(notnull array<ref SCPlusKeyframe> samples)
 	{
@@ -918,17 +1003,17 @@ class SCPlusBake
 					current[axis] = current[axis] - 360;
 					delta = delta - 360;
 				}
-				
+
 				while (delta < -180) {
 					current[axis] = current[axis] + 360;
 					delta = delta + 360;
 				}
 			}
-			
+
 			samples[i].scp_Orientation = current;
 		}
 	}
-	
+
 	// How far the sample is from a straight line between a and b, in tolerances (above 1 = too far)
 	protected static float Error(SCPlusKeyframe a, SCPlusKeyframe b, SCPlusKeyframe sample)
 	{
@@ -937,60 +1022,78 @@ class SCPlusBake
 		if (span > 0.0001) {
 			fraction = (sample.scp_KeyTime - a.scp_KeyTime) / span;
 		}
-		
+
 		vector position = vector.Lerp(a.scp_Position, b.scp_Position, fraction);
-		float error = vector.Distance(position, sample.scp_Position) / POSITION_TOLERANCE;
-		
+		float error = vector.Distance(position, sample.scp_Position) / s_PositionTolerance;
+
 		vector orientation = vector.Lerp(a.scp_Orientation, b.scp_Orientation, fraction);
 		for (int axis = 0; axis < 3; axis++) {
-			error = Math.Max(error, Math.AbsFloat(orientation[axis] - sample.scp_Orientation[axis]) / ANGLE_TOLERANCE);
+			error = Math.Max(error, Math.AbsFloat(orientation[axis] - sample.scp_Orientation[axis]) / s_AngleTolerance);
 		}
-		
+
 		error = Math.Max(error, Math.AbsFloat(Math.Lerp(a.scp_FOV, b.scp_FOV, fraction) - sample.scp_FOV) / FOV_TOLERANCE);
 		error = Math.Max(error, Math.AbsFloat(Math.Lerp(a.scp_DOFDistance, b.scp_DOFDistance, fraction) - sample.scp_DOFDistance) / DOF_DISTANCE_TOLERANCE);
 		error = Math.Max(error, Math.AbsFloat(Math.Lerp(a.scp_DOFBlur, b.scp_DOFBlur, fraction) - sample.scp_DOFBlur) / DOF_BLUR_TOLERANCE);
 		return error;
 	}
-	
+
 	protected static bool NeedsSplit(SCPlusKeyframe a, SCPlusKeyframe b)
 	{
 		if (b.scp_KeyTime - a.scp_KeyTime > MAX_GAP) {
 			return true;
 		}
-		
+
 		vector turn = b.scp_Orientation - a.scp_Orientation;
 		return Math.AbsFloat(turn[0]) > MAX_TURN || Math.AbsFloat(turn[1]) > MAX_TURN || Math.AbsFloat(turn[2]) > MAX_TURN;
 	}
-	
+
 	protected static float WrapAngle(float angle, float low)
 	{
 		while (angle >= low + 360) {
 			angle = angle - 360;
 		}
-		
+
 		while (angle < low) {
 			angle = angle + 360;
 		}
-		
+
 		return angle;
 	}
-	
+
 	// Keeps the first and last sample and every sample the line between its neighbours misses (Ramer-Douglas-Peucker)
 	static array<ref SCPlusKeyframe> Decimate(notnull array<ref SCPlusKeyframe> samples)
+	{
+		s_PositionTolerance = POSITION_TOLERANCE;
+		s_AngleTolerance = ANGLE_TOLERANCE;
+		return DecimateWith(samples);
+	}
+
+	// The actor track: same reduction with the actor tolerances
+	static array<ref SCPlusKeyframe> DecimateActor(notnull array<ref SCPlusKeyframe> samples)
+	{
+		s_PositionTolerance = ACTOR_POSITION_TOLERANCE;
+		s_AngleTolerance = ACTOR_ANGLE_TOLERANCE;
+		array<ref SCPlusKeyframe> result = DecimateWith(samples);
+		s_PositionTolerance = POSITION_TOLERANCE;
+		s_AngleTolerance = ANGLE_TOLERANCE;
+		return result;
+	}
+
+	protected static array<ref SCPlusKeyframe> DecimateWith(notnull array<ref SCPlusKeyframe> samples)
 	{
 		array<ref SCPlusKeyframe> result = new array<ref SCPlusKeyframe>();
 		int count = samples.Count();
 		if (count == 0) {
 			return result;
 		}
-		
+
 		Unwrap(samples);
-		
+
 		array<bool> keep = new array<bool>();
 		for (int i = 0; i < count; i++) {
 			keep.Insert(i == 0 || i == count - 1);
 		}
-		
+
 		array<int> stack = new array<int>();
 		stack.Insert(0);
 		stack.Insert(count - 1);
@@ -1002,7 +1105,7 @@ class SCPlusBake
 			if (b - a < 2) {
 				continue;
 			}
-			
+
 			int worst = -1;
 			float worst_error = 1;
 			for (int j = a + 1; j < b; j++) {
@@ -1012,11 +1115,11 @@ class SCPlusBake
 					worst = j;
 				}
 			}
-			
+
 			if (worst == -1 && NeedsSplit(samples[a], samples[b])) {
 				worst = (a + b) / 2;
 			}
-			
+
 			if (worst != -1) {
 				keep[worst] = true;
 				stack.Insert(a);
@@ -1025,12 +1128,12 @@ class SCPlusBake
 				stack.Insert(b);
 			}
 		}
-		
+
 		for (int k = 0; k < count; k++) {
 			if (!keep[k]) {
 				continue;
 			}
-			
+
 			SCPlusKeyframe key = samples[k].Clone();
 			vector orientation = key.scp_Orientation;
 			orientation[0] = WrapAngle(orientation[0], 0);
@@ -1040,7 +1143,7 @@ class SCPlusBake
 			key.scp_Interpolation = SCPlusInterpolation.BEZIER;
 			result.Insert(key);
 		}
-		
+
 		return result;
 	}
 }

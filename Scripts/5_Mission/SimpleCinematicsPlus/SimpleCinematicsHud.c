@@ -14,8 +14,8 @@ modded class SimpleCinematicsHudController
 	// Set when script (not the player) changes a name box, so the HUD doesn't take it as typing
 	bool scp_NameSetByScript;
 	
-	// Presets dropdown: a header row that opens and closes the list of saved presets
-	protected ref SCPlusWideButton m_PresetDropdown;
+	// Presets dropdown: a combo box that opens and closes the list of saved presets
+	protected ref SCPlusDropdownButton m_PresetDropdown;
 	protected string m_ActivePreset;
 	protected bool m_PresetListOpen;
 	
@@ -36,6 +36,8 @@ modded class SimpleCinematicsHudController
 		m_Weather = GetGame().GetWeather();
 		
 		CameraSpeedSlider = new BindableSliderPrefab("Camera Speed", m_SimpleCinematicsCamera, "CameraSpeed", 0, 200);
+		// While the HUD is shown, Camera Speed only changes with its box ticked (see BindableSliderPrefab.scp_RequireTick)
+		CameraSpeedSlider.scp_RequireTick = true;
 		CameraSensitivitySlider = new BindableSliderPrefab("Camera Mouse Speed", m_SimpleCinematicsCamera, "CameraMouseSensitivity", 0, 100);
 		CameraMovementSmoothness = new BindableSliderPrefab("Movement Smoothing", m_SimpleCinematicsCamera, "CameraMovementSmoothing", 0, 1, 0.01);
 		CameraMouseSmoothness = new BindableSliderPrefab("Mouse Smoothing", m_SimpleCinematicsCamera, "CameraMouseSmoothing", 0, 1, 0.01);
@@ -72,7 +74,7 @@ modded class SimpleCinematicsHudController
 		CameraColor.Insert(new BindableSliderPrefab("Green", m_SimpleCinematicsCamera, "CameraColorizeGreen", 0, 1));
 		CameraColor.Insert(new BindableSliderPrefab("Blue", m_SimpleCinematicsCamera, "CameraColorizeBlue", 0, 1));
 		
-		m_PresetDropdown = new SCPlusWideButton("Preset", this, "OnPresetDropdownClicked");
+		m_PresetDropdown = new SCPlusDropdownButton("Presets", this, "OnPresetDropdownClicked");
 		PresetHeader.Insert(m_PresetDropdown);
 		
 		m_PresetNameBox = new EditBoxPrefab("Name", this, "PresetName");
@@ -161,9 +163,21 @@ modded class SimpleCinematicsHudController
 		PresetList.Clear();
 		array<string> preset_names = SCPlusPreset.List();
 		foreach (string preset_name: preset_names) {
-			SCPlusWideButton preset_button = new SCPlusWideButton(preset_name, this, "OnPresetClicked");
+			SCPlusDropdownItem preset_button = new SCPlusDropdownItem(SCPlusDropdownItem.MakeCaption(preset_name, preset_name == m_ActivePreset), this, "OnPresetClicked");
 			preset_button.SetTag(preset_name);
 			PresetList.Insert(preset_button);
+		}
+	}
+	
+	// Marks the active preset in the open list (captions only; rebuilding the list from inside a row's own
+	// click handler would delete the button that is running)
+	protected void MarkActivePreset()
+	{
+		for (int i = 0; i < PresetList.Count(); i++) {
+			SCPlusDropdownItem row = SCPlusDropdownItem.Cast(PresetList.Get(i));
+			if (row) {
+				row.SetCaption(SCPlusDropdownItem.MakeCaption(row.GetTag(), row.GetTag() == m_ActivePreset));
+			}
 		}
 	}
 	
@@ -204,14 +218,11 @@ modded class SimpleCinematicsHudController
 			active = "(none)";
 		}
 		
-		string sign = "+";
-		if (open) {
-			sign = "-";
+		if (m_PresetDropdown) {
+			m_PresetDropdown.SetCaption(SCPlusDropdownButton.MakeCaption("Presets", active));
 		}
 		
-		if (m_PresetDropdown) {
-			m_PresetDropdown.SetCaption(string.Format("Preset: %1   [%2]", active, sign));
-		}
+		MarkActivePreset();
 	}
 	
 	// Shows or hides a named section of the HUD layout
@@ -420,22 +431,30 @@ modded class SimpleCinematicsHud
 	protected void InitFoldSections()
 	{
 		m_FoldSections = new array<ref SCPlusFoldSection>();
-		AddFoldSection("PresetsFrame", "PresetsText", "Presets", "PresetHeaderContent,PresetListContent,PresetsContent");
-		AddFoldSection("SequencerFrame", "SequencerText", "Sequencer", "SequenceHeaderContent,SequenceListContent,SequenceTransportContent,SequenceKeyToolsContent,SequenceSettingsContent,SequenceTogglesContent,SequenceSettingsContent2,SequenceFileContent");
-		AddFoldSection("CameraOptionsFrame", "CameraOptionsText", "Camera Options", "CameraOptionsContent");
-		AddFoldSection("CameraFiltersFrame", "CameraFiltersText", "Camera Filters", "CameraFiltersContent");
-		AddFoldSection("CameraColorFrame", "CameraColorText", "Camera Color", "CameraColorContent");
-		AddFoldSection("CameraBlurControlsFrame", "CameraBlurControlsText", "Camera Blur", "CameraBlurContent");
-		AddFoldSection("WeatherControlsFrame", "WeatherControlsText", "Weather Controls", "WeatherControlsContent");
-		AddFoldSection("WeatherControlsFrame0", "WeatherControlsText0", "Date Controls", "WeatherControlsContent0");
-		
+		// Panel order (hud.layout): Presets, Sequencer, Graph Editor, Camera Options, Events, Waypoint Editor,
+		// Focus & Follow Target, Bullet Camera, Secondary Camera Settings (Filters, Color, Blur) and
+		// Environment Settings (Weather, Date). The last argument folds a section when the HUD first opens.
+		AddFoldSection("PresetsFrame", "PresetsText", "Presets", "PresetHeaderContent,PresetListContent,PresetsContent", true);
+		AddFoldSection("SequencerFrame", "SequencerText", "Sequencer", "SequenceHeaderContent,SequenceListContent,SequenceTransportContent,SequenceKeyToolsContent,SequenceSettingsContent,SequenceTogglesContent,SequenceFileContent");
 		AddFoldSection("GraphEditorFrame", "GraphEditorText", "Graph Editor", "GraphHeaderContent,GraphListContent");
-		AddFoldSection("EventsFrame", "EventsText", "Events", "EventHeaderContent,EventListContent,EventToolsContent");
+		AddFoldSection("CameraOptionsFrame", "CameraOptionsText", "Camera Options", "CameraOptionsContent");
+		AddFoldSection("EventsFrame", "EventsText", "Events", "EventHeaderContent,EventListContent,EventToolsContent,EventTogglesContent", true);
+		AddFoldSection("WaypointEditorFrame", "WaypointEditorText", "Waypoint Editor", "WaypointTogglesContent,WaypointSettingsContent,WaypointToolsContent");
 		AddFoldSection("FocusTargetFrame", "FocusTargetCaption", "Focus & Follow Target", "FocusTargetMainPanel,FollowTargetMainPanel");
+		AddFoldSection("BulletCameraFrame", "BulletCameraText", "Bullet Camera", "BulletTogglesContent,BulletSettingsContent");
+		
+		AddFoldSection("SecondaryCameraFrame", "SecondaryCameraText", "Secondary Camera Settings", "SecondaryCameraContent", true);
+		AddFoldSection("CameraFiltersFrame", "CameraFiltersText", "Camera Filters", "CameraFiltersContent", true);
+		AddFoldSection("CameraColorFrame", "CameraColorText", "Camera Color", "CameraColorContent", true);
+		AddFoldSection("CameraBlurControlsFrame", "CameraBlurControlsText", "Camera Blur", "CameraBlurContent", true);
+		
+		AddFoldSection("EnvironmentFrame", "EnvironmentText", "Environment Settings", "EnvironmentContent", true);
+		AddFoldSection("WeatherControlsFrame", "WeatherControlsText", "Weather Controls", "WeatherControlsContent", true);
+		AddFoldSection("WeatherControlsFrame0", "WeatherControlsText0", "Date Controls", "WeatherControlsContent0", true);
 	}
 	
 	// content_names: comma-separated widget names
-	protected SCPlusFoldSection AddFoldSection(string header_name, string title_name, string title, string content_names)
+	protected SCPlusFoldSection AddFoldSection(string header_name, string title_name, string title, string content_names, bool start_folded = false)
 	{
 		array<string> names = new array<string>();
 		content_names.Split(",", names);
@@ -457,6 +476,10 @@ modded class SimpleCinematicsHud
 		}
 		
 		section.UpdateTitle();
+		if (start_folded) {
+			section.Toggle();
+		}
+		
 		m_FoldSections.Insert(section);
 		return section;
 	}
@@ -501,7 +524,7 @@ class SCPlusFoldSection: Managed
 	
 	bool IsUnderMouse(int mouse_x, int mouse_y)
 	{
-		if (!m_Header || !m_Header.IsVisible()) {
+		if (!m_Header || !m_Header.IsVisibleHierarchy()) {
 			return false;
 		}
 		

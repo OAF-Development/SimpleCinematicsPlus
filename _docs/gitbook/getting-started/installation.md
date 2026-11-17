@@ -12,7 +12,7 @@ If you use a launcher (DayZ Launcher, DZSA, a mod manager), subscribe to all fiv
 
 ## Client and server
 
-SCPlus is needed on **both the client and the server**. Several features send small requests to the server (firing, movement, the actor reset, and setting the date and time), so a server without SCPlus will ignore them.
+SCPlus is needed on **both the client and the server**. Several features send small requests to the server (firing, movement, path following, actor track replay, putting the actor and the scene target back at their start, and setting the date and time), so a server without SCPlus will ignore them.
 
 For a dedicated server:
 
@@ -30,4 +30,4 @@ Offline (singleplayer) mode needs no list: the camera just works.
 
 * Open **Options > Controls**. You should see a **Simple Cinematics** category with the Sequencer keys and **Toggle Hold Pose** in it.
 * Open **Options**. There should be a **Simple Cinematics** tab with Movement and View settings.
-* Open the camera (`Insert` by default). The right panel should have **Sequencer**, **Graph Editor**, **Events** and **Presets** sections.
+* Open the camera (`Insert` by default). The right panel should list, from the top: **Presets**, **Sequencer**, **Graph Editor**, **Camera Options**, **Events**, **Waypoint Editor**, **Focus & Follow Target**, **Bullet Camera**, **Secondary Camera Settings** and **Environment Settings**. Some of them start folded, so click a title to open it.
