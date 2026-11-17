@@ -15,7 +15,71 @@ modded class SimpleCinematicsHudController
 		super.SetupSequencer();
 		m_ReplayActorBox = new CheckBoxPrefab("Replay Actor Track", this, "SequenceReplayActor");
 		AddToggleTo(WaypointToggles, m_ReplayActorBox);
+		WaypointTools.Insert(new SCPlusButton("Set Actor Key", this, "OnSetActorKeyClicked"));
 		WaypointTools.Insert(new SCPlusButton("Clear Actor Track", this, "OnClearActorTrackClicked"));
+	}
+
+	// Keys where the actor stands and faces now, at the playhead (one undo step)
+	void OnSetActorKeyClicked(SCPlusButton button)
+	{
+		if (!m_Sequence || !m_SimpleCinematicsCamera) {
+			return;
+		}
+
+		PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
+		if (!player || !player.IsAlive()) {
+			Notify("No actor to key");
+			return;
+		}
+
+		vector position = player.GetPosition();
+		vector body_orientation = player.GetOrientation();
+		if (SCPlusEventRunner.SCPlusHasNaN(position) || SCPlusEventRunner.SCPlusHasNaN(body_orientation)) {
+			Notify("Couldn't read the actor's position");
+			return;
+		}
+
+		m_SimpleCinematicsCamera.Pause();
+		float time = m_SimpleCinematicsCamera.GetPlayhead();
+		array<ref SCPlusKeyframe> keys = m_Sequence.scp_ActorKeys;
+
+		// Keep the heading continuous with the key before it (or after it), so the track doesn't spin round
+		float heading = body_orientation[0];
+		int neighbour = -1;
+		bool replaced = false;
+		foreach (int i, SCPlusKeyframe existing: keys) {
+			if (Math.AbsFloat(existing.scp_KeyTime - time) <= SCPlusCameraSequence.KEY_TOLERANCE) {
+				replaced = true;
+				continue;
+			}
+
+			if (existing.scp_KeyTime < time || neighbour == -1) {
+				neighbour = i;
+			}
+		}
+
+		if (neighbour != -1) {
+			vector neighbour_orientation = keys[neighbour].scp_Orientation;
+			heading = SCPlusSequenceEvaluator.UnwrapAngle(heading, neighbour_orientation[0]);
+		}
+
+		PushUndo();
+		SCPlusKeyframe actor_key = SCPlusKeyframe.Create(time, position, Vector(heading, 0, 0), 70, 0, 0);
+		m_SelectedActorKey = SCPlusCameraSequence.InsertSorted(keys, actor_key);
+		m_SimpleCinematicsCamera.SetActorPreviewSelection(m_SelectedActorKey);
+		OnSequenceEdited();
+
+		string action = "Set";
+		if (replaced) {
+			action = "Updated";
+		}
+
+		string hint = string.Empty;
+		if (m_Sequence.HasActorTrack() && !m_Sequence.scp_ReplayActor) {
+			hint = ". Tick Replay Actor Track to walk it in playback";
+		}
+
+		Notify(string.Format("%1 actor key at %2 s (%3 keys)%4", action, FormatSeconds(time), keys.Count(), hint));
 	}
 
 	override void PropertyChanged(string property_name)

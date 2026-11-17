@@ -95,6 +95,7 @@ class SCPlusEventRunner: Managed
 			return;
 		}
 
+		CancelActorPreview();
 		HumanInputController input = player.GetInputController();
 		if (input) {
 			EndPath(input, true);
@@ -696,6 +697,7 @@ m_MoveTimeLeft -= dt;
 	// Stops pending shots and hands the weapon back to the player (playback stopped or camera closed)
 	void Reset()
 	{
+		CancelActorPreview();
 		m_ShotsLeft = 0;
 		m_RaiseHeld = false;
 		m_LowerTimer = -1;
@@ -753,6 +755,66 @@ m_MoveTimeLeft -= dt;
 		MoveOnServer(player, 0, 0, 0);
 		player.SetPosition(position);
 		player.SetOrientation(orientation);
+	}
+
+	// --- Scrub preview ---
+	// While paused with Replay Actor Track on, scrubbing the timeline puts the actor where the track has them at
+	// the playhead. The client moves at once; in multiplayer the server is told at most every
+	// ACTOR_PREVIEW_INTERVAL seconds (through the actor reset RPC), and always gets the last pose of a drag.
+	static const float ACTOR_PREVIEW_INTERVAL = 0.15;
+	protected float m_PreviewLastSend = -1000;
+	protected bool m_PreviewPending;
+	protected vector m_PreviewPosition;
+	protected vector m_PreviewOrientation;
+
+	void PreviewActor(vector position, vector orientation)
+	{
+		PlayerBase player = GetPlayer();
+		if (!player || !player.IsAlive() || SCPlusHasNaN(position) || SCPlusHasNaN(orientation)) {
+			return;
+		}
+
+		player.SetPosition(position);
+		player.SetOrientation(orientation);
+		if (!GetGame().IsMultiplayer()) {
+			return;
+		}
+
+		m_PreviewPosition = position;
+		m_PreviewOrientation = orientation;
+		if (m_PreviewPending) {
+			return; // the queued send picks up the newest pose
+		}
+
+		float wait = m_PreviewLastSend + ACTOR_PREVIEW_INTERVAL - GetGame().GetTickTime();
+		if (wait <= 0) {
+			SendActorPreview();
+			return;
+		}
+
+		m_PreviewPending = true;
+		GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(SendActorPreview, Math.Ceil(wait * 1000), false);
+	}
+
+	protected void SendActorPreview()
+	{
+		m_PreviewPending = false;
+		m_PreviewLastSend = GetGame().GetTickTime();
+		PlayerBase player = GetPlayer();
+		if (player && player.IsAlive()) {
+			OnActorReset.Invoke(player, m_PreviewPosition, m_PreviewOrientation);
+		}
+	}
+
+	// Drops a queued preview send (playback, a reset or a track replay takes over the actor)
+	void CancelActorPreview()
+	{
+		if (!m_PreviewPending) {
+			return;
+		}
+
+		m_PreviewPending = false;
+		GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).Remove(SendActorPreview);
 	}
 
 	// Furthest a scene target may be moved by a reset

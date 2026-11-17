@@ -573,6 +573,23 @@ static const float SCPLUS_COLLISION_MARGIN = 0.2;
 			ApplySequencePose(m_Playhead);
 			FinishPose();
 		}
+
+		if (apply_pose) {
+			PreviewActorAt(m_Playhead);
+		}
+	}
+
+	// Scrub preview: while paused with Replay Actor Track on, the actor stands where the track has them
+	void PreviewActorAt(float time)
+	{
+		if (m_Playing || scp_Baking || !IsActorTrackActive()) {
+			return;
+		}
+
+		vector position = GetActorTrackPosition(time);
+		float heading = scp_ActorEvaluator.EvaluateChannelAt(3, time);
+		heading = heading - Math.Round(heading / 360) * 360;
+		SCPlusEventRunner.Get().PreviewActor(position, Vector(heading, 0, 0));
 	}
 
 	bool Play()
@@ -796,13 +813,13 @@ static const float SCPLUS_COLLISION_MARGIN = 0.2;
 		}
 
 		vector position = player.GetPosition();
-		vector orientation = player.GetOrientation();
-		if (SCPlusIsNaN(position) || SCPlusIsNaN(orientation)) {
+		vector body_orientation = player.GetOrientation();
+		if (SCPlusIsNaN(position) || SCPlusIsNaN(body_orientation)) {
 			return;
 		}
 
 		// Heading only: pitch / roll of the body are noise for a walking actor
-		scp_BakeActorSamples.Insert(SCPlusKeyframe.Create(time, position, Vector(orientation[0], 0, 0), 70, 0, 0));
+		scp_BakeActorSamples.Insert(SCPlusKeyframe.Create(time, position, Vector(body_orientation[0], 0, 0), 70, 0, 0));
 	}
 
 	// True when the recorded actor moved or turned enough to be worth a track

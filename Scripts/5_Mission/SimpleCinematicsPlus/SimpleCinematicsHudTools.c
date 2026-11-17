@@ -462,7 +462,8 @@ modded class SimpleCinematicsHudController
 		SCPlusTip("OnDeleteLastWaypointClicked", "Delete the selected waypoint, or the last one.");
 		SCPlusTip("OnClearPathClicked", "Remove every waypoint.");
 		SCPlusTip("SequenceReplayActor", "Playback walks your character along the actor track recorded by Auto-Key (edit it in the Graph Editor: Actor X / Height / Z / Heading). Move and Path events are skipped while it replays, and Follow Actor / Aim At Target use the track. Auto-Key keeps the track as it is while this is on.");
-		SCPlusTip("OnClearActorTrackClicked", "Delete the actor track recorded by Auto-Key (click twice; Ctrl+Z undoes).");
+		SCPlusTip("OnSetActorKeyClicked", "Key your character's current spot and facing at the playhead (replaces an actor key on the same frame; Ctrl+Z undoes). With Replay Actor Track on, scrubbing puts your character on the track.");
+		SCPlusTip("OnClearActorTrackClicked","Delete the actor track recorded by Auto-Key (click twice; Ctrl+Z undoes).");
 		// Parked with their buttons (see "Event duration and angle buttons" above)
 		// SCPlusTip("OnEventShorterClicked", "Make the selected Walk / Jog / Sprint half a second shorter.");
 		// SCPlusTip("OnEventLongerClicked", "Make the selected Walk / Jog / Sprint half a second longer.");
