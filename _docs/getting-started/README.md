@@ -1,2 +1,6 @@
-# getting-started
+---
+icon: play
+---
+
+# Getting Started
 

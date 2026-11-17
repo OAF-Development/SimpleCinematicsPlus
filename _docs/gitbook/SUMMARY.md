@@ -1,3 +1,7 @@
+---
+icon: memo-circle-info
+---
+
 # Table of Contents
 
 * [Simple Cinematics Plus](../)

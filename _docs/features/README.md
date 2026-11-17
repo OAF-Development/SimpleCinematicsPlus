@@ -1,2 +1,6 @@
-# features
+---
+icon: circle-star
+---
+
+# Features
 
