@@ -72,11 +72,44 @@ class SCPlusButton: ButtonPrefab
 	}
 }
 
-// Full-width version, used for list rows (keys, presets, sequences) and dropdown headers
+// Full-width version, used for list rows (the key list in the left panel)
 class SCPlusWideButton: SCPlusButton
 {
 	override string GetLayoutFile()
 	{
 		return "SimpleCinematicsPlus/GUI/layouts/prefabs/SCPlusWideButton.layout";
+	}
+}
+
+// Dropdown field (Presets, Sequence, Channel, Event Type): a dark combo box with the label and the current
+// choice on the left and an arrow on the right. Clicking it opens or closes its SCPlusDropdownItem list.
+class SCPlusDropdownButton: SCPlusWideButton
+{
+	override string GetLayoutFile()
+	{
+		return "SimpleCinematicsPlus/GUI/layouts/prefabs/SCPlusDropdownHeader.layout";
+	}
+	
+	static string MakeCaption(string label, string value)
+	{
+		return string.Format("  %1:   %2", label, value);
+	}
+}
+
+// One row of an open dropdown list: compact, left aligned, the current choice marked
+class SCPlusDropdownItem: SCPlusWideButton
+{
+	override string GetLayoutFile()
+	{
+		return "SimpleCinematicsPlus/GUI/layouts/prefabs/SCPlusDropdownItem.layout";
+	}
+	
+	static string MakeCaption(string text, bool current)
+	{
+		if (current) {
+			return "  >  " + text;
+		}
+		
+		return "      " + text;
 	}
 }

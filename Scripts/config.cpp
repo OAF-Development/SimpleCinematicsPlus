@@ -5,7 +5,6 @@ class CfgPatches
 		units[] = {"SCPlusActorMarker_Green", "SCPlusActorMarker_Yellow", "SCPlusActorMarker_Red", "SCPlusActorMarker_Blue", "SCPlusActorMarker_White"};
 		weapons[] = {};
 		requiredVersion = 0.1;
-		// Load after Simple Cinematics (and therefore after Dabs Framework) so the modded classes apply on top
 		requiredAddons[] = {"DZ_Data", "DZ_Scripts", "DF_Scripts", "SimpleCinematics_Scripts"};
 	};
 };
@@ -81,13 +80,13 @@ class CfgVehicles
 	class ItemBase;
 	class SCPlusActorMarker: ItemBase
 	{
-		scope = 0;
+		scope = 2;
 		displayName = "Actor Marker";
 		descriptionShort = "Drop it where an actor should move to. Everyone sees it, but it never shows in the Simple Cinematics camera.";
 		model = "SimpleCinematicsPlus\Scripts\Data\Models\scp_actor_marker.p3d";
 		weight = 100;
-		itemSize[] = {1, 2};
-		rotationFlags = 0;
+		itemSize[] = {1,1};
+		rotationFlags = 16;
 		hiddenSelections[] = {"camo"};
 		hiddenSelectionsTextures[] = {"#(argb,8,8,3)color(0.15,1,0.25,1,co)"};
 	};

@@ -1,6 +1,6 @@
 // Event track UI (must compile after SimpleCinematicsHudSequencer.c and SimpleCinematicsHudTimeline.c):
-//  - its own "Events" HUD section: a "Type: <type>" dropdown listing every event type, then Add Event
-//    (at the playhead) and Delete Event
+//  - its own "Events" HUD section: an "Event Type" dropdown listing every event type, then Add Event
+//    (at the playhead) and Delete Event; the waypoint buttons go in the "Waypoint Editor" section
 //  - the timeline bar shows events as small orange markers under the key track; click one to select it and
 //    jump to it, drag it to retime it (0.1 s snapping, Ctrl for none); Delete removes the selected event
 //  - "Emote (current)" stores whatever emote the player is playing now, so start it from the wheel first
@@ -12,8 +12,8 @@ modded class SimpleCinematicsHudController
 	
 	protected int m_SelectedEvent = -1;
 	protected int m_EventChoice;
-	protected ref SCPlusWideButton m_EventTypeButton;
-	protected ref array<SCPlusWideButton> m_EventRows = new array<SCPlusWideButton>();
+	protected ref SCPlusDropdownButton m_EventTypeButton;
+	protected ref array<SCPlusDropdownItem> m_EventRows = new array<SCPlusDropdownItem>();
 	protected bool m_EventListOpen;
 	protected bool m_EventDragUndoPushed;
 	
@@ -26,10 +26,10 @@ modded class SimpleCinematicsHudController
 	{
 		super.SetupSequencer();
 		
-		m_EventTypeButton = new SCPlusWideButton("Type: -", this, "OnEventTypeClicked");
+		m_EventTypeButton = new SCPlusDropdownButton("Event Type", this, "OnEventTypeClicked");
 		EventHeader.Insert(m_EventTypeButton);
 		for (int event_choice = 0; event_choice < SCPLUS_EVENT_CHOICES; event_choice++) {
-			SCPlusWideButton event_row = new SCPlusWideButton(GetEventChoiceName(event_choice), this, "OnEventChoiceClicked");
+			SCPlusDropdownItem event_row = new SCPlusDropdownItem(GetEventChoiceName(event_choice), this, "OnEventChoiceClicked");
 			event_row.SetTag(event_choice.ToString());
 			EventList.Insert(event_row);
 			m_EventRows.Insert(event_row);
@@ -39,9 +39,10 @@ modded class SimpleCinematicsHudController
 		EventTools.Insert(new SCPlusButton("Delete Event", this, "OnDeleteEventClicked"));
 		EventTools.Insert(new SCPlusButton("Set Actor Start", this, "OnSetActorStartClicked"));
 		EventTools.Insert(new SCPlusButton("Set Target Start", this, "OnSetTargetStartClicked"));
-		EventTools.Insert(new SCPlusButton("Delete Point", this, "OnDeleteLastWaypointClicked"));
-		EventTools.Insert(new SCPlusButton("Clear Path", this, "OnClearPathClicked"));
-SetEventListOpen(false);
+		// Waypoint Editor section
+		WaypointTools.Insert(new SCPlusButton("Delete Point", this, "OnDeleteLastWaypointClicked"));
+		WaypointTools.Insert(new SCPlusButton("Clear Path", this, "OnClearPathClicked"));
+		SetEventListOpen(false);
 	}
 	
 	// Public wrapper so the module can show event runner problems
@@ -308,10 +309,10 @@ SetEventListOpen(false);
 	protected void UpdateEventCaption()
 	{
 		if (m_EventTypeButton) {
-			m_EventTypeButton.SetCaption(DropdownCaption("Type", GetEventChoiceName(m_EventChoice), m_EventListOpen));
+			m_EventTypeButton.SetCaption(DropdownCaption("Event Type", GetEventChoiceName(m_EventChoice), m_EventListOpen));
 		}
 		
-		foreach (SCPlusWideButton row: m_EventRows) {
+		foreach (SCPlusDropdownItem row: m_EventRows) {
 			int row_choice = row.GetTag().ToInt();
 			row.SetCaption(MarkCurrentChoice(GetEventChoiceName(row_choice), row_choice == m_EventChoice));
 		}

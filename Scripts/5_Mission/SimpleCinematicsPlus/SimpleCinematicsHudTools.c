@@ -1,7 +1,7 @@
 // Workflow and UX helpers (must compile after SimpleCinematicsHudTimelineEvents.c, before SimpleCinematicsModule.c):
 //  - Record Take and Keys (F1) buttons: requests picked up by the module (SCPlusUIRequests)
 //  - timed events (Walk / Jog / Sprint) drawn as bars on the timeline; drag a bar's end to change its
-//    duration; Shorter / Longer / Angle buttons for the selected event; clashing events drawn red
+//    duration; clashing events drawn red (the Shorter / Longer / Angle buttons are parked, see below)
 //  - "click again to confirm" before deleting or overwriting a sequence or preset (backups are kept too,
 //    see SCPlusBackups)
 //  - hover tooltips on HUD controls (Dabs Framework TooltipView)
@@ -105,8 +105,14 @@ class SCPlusKeyHelp
 
 modded class SimpleCinematicsHudController
 {
-	// --- Event duration and angle ---
-
+	// --- Event duration and angle buttons: PARKED (2026-11-17) ---
+	// iLL removed the Shorter / Longer and Angle -45 / +45 buttons from the panel to cut clutter:
+	//  - Shorter / Longer are replaced by dragging the end of an event bar on the timeline
+	//    (SCPlusDragEventEnd below). Revisit only if a precise step control is wanted again.
+	//  - Angle -45 / +45 are dropped in favour of waypoint paths (PATH events). Moves keep any saved
+	//    scp_Angle, so old sequences still play the same.
+	// To bring them back, uncomment this block and the matching SCPlusTip lines in SCPlusBuildTooltips.
+	/*
 	override void SetupSequencer()
 	{
 		super.SetupSequencer();
@@ -175,6 +181,7 @@ modded class SimpleCinematicsHudController
 		Notify(event_key.GetCaption());
 		SCPlusWarnIfClash(m_SelectedEvent);
 	}
+	*/
 
 	// Timeline: dragging the end of an event bar. Returns the event's (unchanged) index.
 	protected bool m_DurationDragUndoPushed;
@@ -231,59 +238,77 @@ modded class SimpleCinematicsHudController
 	{
 		return m_Sequence && (m_Sequence.Count() >= 2 || m_SimpleCinematicsCamera.CanBakeTrack());
 	}
-	
+
 	// --- Auto-Key ---
-	
+
 	// Called when playback stops: swaps the sequence's keys for a finished bake (one undo step)
 	void SCPlusCommitBake()
 	{
 		if (!m_Sequence || !m_SimpleCinematicsCamera) {
 			return;
 		}
-		
+
 		array<ref SCPlusKeyframe> baked = m_SimpleCinematicsCamera.GetBakeResult();
 		string message = m_SimpleCinematicsCamera.GetBakeMessage();
 		if (!baked || baked.Count() < 2) {
 			if (message != string.Empty) {
 				Notify(message);
 			}
-			
+
 			m_SimpleCinematicsCamera.ClearBakeResult();
 			return;
 		}
-		
+
 		PushUndo();
 		m_Sequence.scp_Keys.Clear();
 		foreach (SCPlusKeyframe key: baked) {
 			m_Sequence.scp_Keys.Insert(key.Clone());
 		}
-		
+
+		// The actor track recorded with it (only when the actor moved)
+		int actor_key_count = 0;
+		array<ref SCPlusKeyframe> baked_actor = m_SimpleCinematicsCamera.GetBakeActorResult();
+		if (baked_actor && baked_actor.Count() >= 2) {
+			m_Sequence.scp_ActorKeys.Clear();
+			foreach (SCPlusKeyframe actor_key: baked_actor) {
+				m_Sequence.scp_ActorKeys.Insert(actor_key.Clone());
+			}
+
+			actor_key_count = baked_actor.Count();
+			m_SelectedActorKey = -1;
+		}
+
 		int key_count = baked.Count();
 		float recorded = m_SimpleCinematicsCamera.GetBakeRecordedLength();
 		m_SimpleCinematicsCamera.ClearBakeResult();
 		m_SelectedKey = -1;
-		
+
 		// The keys now hold the follow and the aim, so playing them with these on would apply them twice
 		m_Sequence.scp_FollowActor = false;
 		SequenceFollowActor = false;
 		if (m_FollowActorBox) {
 			m_FollowActorBox.ResetToDefault();
 		}
-		
+
 		SequenceAimAtTarget = false;
 		m_SimpleCinematicsCamera.SequenceAimAtTarget = false;
 		if (m_AimAtTargetBox) {
 			m_AimAtTargetBox.ResetToDefault();
 		}
-		
+
 		SequenceAutoKey = false;
 		m_SimpleCinematicsCamera.scp_AutoKey = false;
 		if (m_AutoKeyBox) {
 			m_AutoKeyBox.ResetToDefault();
 		}
-		
+
 		OnSequenceEdited();
-		Notify(string.Format("Auto-Key: baked %1 keys over %2 s (Ctrl+Z undoes). Follow Actor, Aim At Target and Auto-Key are now off.", key_count, FormatSeconds(recorded)));
+		string actor_part = string.Empty;
+		if (actor_key_count > 0) {
+			actor_part = string.Format(" and %1 actor track keys", actor_key_count);
+		}
+
+		Notify(string.Format("Auto-Key: baked %1 keys%3 over %2 s (Ctrl+Z undoes). Follow Actor, Aim At Target and Auto-Key are now off.", key_count, FormatSeconds(recorded), actor_part));
 	}
 
 	// --- Confirm before deleting or overwriting ---
@@ -392,9 +417,9 @@ modded class SimpleCinematicsHudController
 		SCPlusTip("OnKeyClicked", "Jump to this key and select it.");
 
 		// Sequencer: settings and toggles
-		SCPlusTip("TimelineTime", "The playhead. Drag to scrub through the sequence.");
-		SCPlusTip("SequenceLength", "Length of the timeline in seconds. It always grows to fit the last key or event.");
-		SCPlusTip("KeySpacing", "How far Set Key moves the playhead on after each key, so fly - I - fly - I builds a move.");
+		SCPlusTip("TimelineTime", "Scrubber: the playhead. Drag to scrub through the sequence.");
+		SCPlusTip("SequenceLength", "Runtime: length of the timeline in seconds. It always grows to fit the last key or event.");
+		SCPlusTip("KeySpacing", "How many whole seconds Set Key moves the playhead on after each key, so fly - I - fly - I builds a move.");
 		SCPlusTip("PlaybackSpeed", "Playback speed. Events and actor moves stay in real time.");
 		SCPlusTip("WaypointCurve", "Corner rounding of the selected waypoint: 0 is a sharp turn, 1 fully rounded.");
 		SCPlusTip("SequenceLoop", "Play the sequence again from the start when it ends. The actor is put back each loop.");
@@ -402,16 +427,16 @@ modded class SimpleCinematicsHudController
 		SCPlusTip("SequenceAutoKey", "Bake: the next Play or Record Take records the camera into keys from the start. With no keys, the camera holds your framing on the target (Follow or Focus) and aims at the Focus target. Stopping early keeps nothing, except with no keys.");
 		SCPlusTip("SequenceFollowActor", "During playback, move the camera with the actor. Make the keys with the actor standing at the actor start, and the framing follows them as they walk, run or follow a path.");
 		SCPlusTip("CameraCollision", "Stop the camera passing through walls and terrain while flying. Off during playback.");
-		SCPlusTip("PlaceWaypoints", "Clicking the ground adds a waypoint for path events (P). Click a waypoint disc to select or drag it.");
+		SCPlusTip("PlaceWaypoints", "Clicking the ground adds a waypoint for path events (P). The first click also puts point 1 where your character stands, so the path always starts at the actor. Click a waypoint disc to select or drag it.");
 		SCPlusTip("ShowPaths", "Show the waypoint path strips. Hidden during playback, so they never show in a recording.");
 		SCPlusTip("SequenceHideHud", "Hide the HUD and cursor while the sequence plays.");
-		SCPlusTip("SequenceShowPreview", "Draw the camera's motion path, keys and look directions in the world while editing.");
+		SCPlusTip("SequenceShowPreview", "Draw the camera's motion path (yellow), keys with their look direction (white, selected blue) and the playhead (red) on screen while editing with the HUD shown. Never drawn during playback or Record Take.");
 		SCPlusTip("RippleEdit", "Retiming a key also shifts every key after it.");
 		SCPlusTip("ShowThirdsGrid", "Rule-of-thirds grid for framing. Hidden during Record Take.");
 		SCPlusTip("HoldPose", "Keep your character's emote playing while the camera is open (comma).");
 		SCPlusTip("BulletCam", "Follow your next shot from the muzzle to the hit, in slow motion.");
 		SCPlusTip("BulletCamShowRound", "Show the bullet model during Bullet Cam.");
-		SCPlusTip("BulletCamShowPath", "Debug lines for the bullet's path.");
+		SCPlusTip("BulletCamShowPath", "Debug Bullet Path: lines showing the barrel and the bullet's path, for checking the Bullet Cam direction.");
 		SCPlusTip("BulletCamSpeed", "Bullet Cam speed, as a percentage of the real bullet speed.");
 		SCPlusTip("BulletCamDistance", "How far behind the bullet the camera follows, in metres.");
 		SCPlusTip("OnLetterboxClicked", "Cycle the letterbox bars for a cinematic aspect ratio. These do show in recordings.");
@@ -436,13 +461,16 @@ modded class SimpleCinematicsHudController
 		SCPlusTip("OnSetActorStartClicked", "Remember where your character stands now. Stop and each loop put them back here.");
 		SCPlusTip("OnDeleteLastWaypointClicked", "Delete the selected waypoint, or the last one.");
 		SCPlusTip("OnClearPathClicked", "Remove every waypoint.");
-		SCPlusTip("OnEventShorterClicked", "Make the selected Walk / Jog / Sprint half a second shorter.");
-		SCPlusTip("OnEventLongerClicked", "Make the selected Walk / Jog / Sprint half a second longer.");
-		SCPlusTip("OnEventAngleLeftClicked", "Turn the selected move's direction 45 degrees one way (relative to where the body faces).");
-		SCPlusTip("OnEventAngleRightClicked", "Turn the selected move's direction 45 degrees the other way.");
+		SCPlusTip("SequenceReplayActor", "Playback walks your character along the actor track recorded by Auto-Key (edit it in the Graph Editor: Actor X / Height / Z / Heading). Move and Path events are skipped while it replays, and Follow Actor / Aim At Target use the track. Auto-Key keeps the track as it is while this is on.");
+		SCPlusTip("OnClearActorTrackClicked", "Delete the actor track recorded by Auto-Key (click twice; Ctrl+Z undoes).");
+		// Parked with their buttons (see "Event duration and angle buttons" above)
+		// SCPlusTip("OnEventShorterClicked", "Make the selected Walk / Jog / Sprint half a second shorter.");
+		// SCPlusTip("OnEventLongerClicked", "Make the selected Walk / Jog / Sprint half a second longer.");
+		// SCPlusTip("OnEventAngleLeftClicked", "Turn the selected move's direction 45 degrees one way (relative to where the body faces).");
+		// SCPlusTip("OnEventAngleRightClicked", "Turn the selected move's direction 45 degrees the other way.");
 
 		// Camera (Simple Cinematics' own sliders)
-		SCPlusTip("CameraSpeed", "How fast the camera flies (mouse wheel).");
+		SCPlusTip("CameraSpeed", "How fast the camera flies. With the HUD shown it's locked unless its box is ticked (then the wheel steps it); with the HUD hidden the mouse wheel changes it.");
 		SCPlusTip("CameraMouseSensitivity", "How fast the camera turns with the mouse (Left Ctrl + wheel).");
 		SCPlusTip("CameraMovementSmoothing", "Higher values ease the camera in and out of moves.");
 		SCPlusTip("CameraMouseSmoothing", "Higher values smooth out mouse turns.");
@@ -465,7 +493,12 @@ modded class SimpleCinematicsHudController
 		collections.Insert(SequenceKeyTools);
 		collections.Insert(SequenceSettings);
 		collections.Insert(SequenceToggles);
-		collections.Insert(SequenceSettings2);
+		collections.Insert(WaypointToggles);
+		collections.Insert(WaypointSettings);
+		collections.Insert(WaypointTools);
+		collections.Insert(BulletToggles);
+		collections.Insert(BulletSettings);
+		collections.Insert(EventToggles);
 		collections.Insert(SequenceFile);
 		collections.Insert(PresetHeader);
 		collections.Insert(PresetControls);
