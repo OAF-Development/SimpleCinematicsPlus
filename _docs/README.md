@@ -26,6 +26,8 @@ This addon is built primarily for those seeking to accomplish common tasks of **
 * Will work on live server instances for the core features, but some edge cases are untested; and performance may take hits and result in disruptions in a smooth camera tracking.
 * See [Known limits](gitbook/reference/known-limits.md).
 
+{% embed url="https://www.youtube.com/watch?v=UjeuxGKaBnw" %}
+
 ## Requirements
 
 | Mod                                                                                               | Why                                                                           |
